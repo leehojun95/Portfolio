@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dogmall.demo.mapper.MemberMapper">
+
+<select id="idCheck" parameterType="String" resultType="String">
+    SELECT 
+        mbl_id
+    FROM 
+        mbl_tbl
+    WHERE 
+        mbl_id = #{mbl_id}
+</select>
+
+<insert id="join" parameterType="com.dogmall.demo.domain.MemberVO">
+
+	INSERT INTO 
+		mbl_tbl(mbl_id, mbl_password, mbl_email, mbl_name, mbl_brith, mbl_zip_code, mbl_addr, mbl_addr_detail, mbl_phone, mbl_gender) 
+	VALUES
+		(#{mbl_id}, #{mbl_password}, #{mbl_email}, #{mbl_name}, #{mbl_brith}, #{mbl_zip_code}, #{mbl_addr}, #{mbl_addr_detail}, #{mbl_phone}, #{mbl_gender}) 
+</insert>
+
+<select id="login" resultType="com.dogmall.demo.domain.MemberVO"  parameterType="String" >
+
+	SELECT
+		mbl_id, mbl_password, mbl_email, mbl_name, mbl_brith, mbl_zip_code, mbl_addr, mbl_addr_detail, mbl_phone, mbl_gender, mbl_point, mbl_regdate, mbl_updatedate
+	FROM
+        mbl_tbl
+    WHERE 
+        mbl_id = #{mbl_id}
+</select>
+
+<update id="modify" parameterType="com.dogmall.demo.domain.MemberVO">
+	
+	UPDATE
+		mbl_tbl
+	SET
+		mbl_email = #{mbl_email}, mbl_zip_code = #{mbl_zip_code}, mbl_addr = #{mbl_addr}, mbl_addr_detail = #{mbl_addr_detail}, mbl_phone = #{mbl_phone}
+	WHERE
+		 mbl_id = #{mbl_id}
+</update>
+
+<select id="idfind" resultType="String">
+
+	SELECT
+		mbl_id
+	FROM
+		mbl_tbl
+	WHERE
+		mbl_name = #{mbl_name}
+	AND
+		mbl_email = #{mbl_email}
+
+</select>
+
+<select id="pwfind" resultType="String" parameterType="map">
+	
+		SELECT 
+			mbl_email
+		FROM 
+			mbl_tbl
+		WHERE
+			mbl_id = #{mbl_id}
+		AND
+			mbl_name = #{mbl_name}
+		AND
+			mbl_email = #{mbl_email}
+			
+	</select>
+	
+	<update id="tempPwUpdate" parameterType="map">
+	
+		UPDATE
+			mbl_tbl
+		SET
+			mbl_password = #{temp_enc_pw}
+		WHERE
+			mbl_id = #{mbl_id}
+	
+	</update>
+	
+	<update id="changePw" parameterType="map">
+	
+		UPDATE 
+			mbl_tbl
+		SET
+			mbl_password = #{new_mbl_password}
+		WHERE
+			mbl_id = #{mbl_id}
+	
+	</update>
+	
+	<delete id="delete" parameterType="String">
+	
+		DELETE FROM
+			mbl_tbl
+		WHERE
+			mbl_id = #{mbl_id}
+	
+	</delete>
+
+</mapper>
