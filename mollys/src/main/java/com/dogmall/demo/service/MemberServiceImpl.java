@@ -11,13 +11,13 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class MemberServiceImpl implements MemberService {
 
-    private final MemberMapper mollysMapper;
+    private final MemberMapper memberMapper;
     
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public String idCheck(String mbl_id) {
-        return mollysMapper.idCheck(mbl_id);
+        return memberMapper.idCheck(mbl_id);
     }
 
 	@Override
@@ -25,20 +25,20 @@ public class MemberServiceImpl implements MemberService {
 		
 		vo.setMbl_password(passwordEncoder.encode(vo.getMbl_password()));
 		
-		mollysMapper.join(vo);
+		memberMapper.join(vo);
 		
 	}
 
 	@Override
 	public MemberVO login(String mbl_id) {
 		// TODO Auto-generated method stub
-		return mollysMapper.login(mbl_id);
+		return memberMapper.login(mbl_id);
 	}
 
 	@Override
 	public void modify(MemberVO vo) {
 		// TODO Auto-generated method stub
-		mollysMapper.modify(vo);
+		memberMapper.modify(vo);
 		
 		
 	}
@@ -46,30 +46,30 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public String idfind(String mbl_name, String mbl_email) {
 		// TODO Auto-generated method stub
-		return mollysMapper.idfind(mbl_name, mbl_email);
+		return memberMapper.idfind(mbl_name, mbl_email);
 	}
 
 	@Override
 	public String pwfind(String mbl_id, String mbl_name, String mbl_email) {
 		// TODO Auto-generated method stub
-		return mollysMapper.pwfind(mbl_id, mbl_name, mbl_email);
+		return memberMapper.pwfind(mbl_id, mbl_name, mbl_email);
 	}
 
 	@Override
 	public void tempPwUpdate(String mbl_id, String temp_enc_pw) {
-		mollysMapper.tempPwUpdate(mbl_id, temp_enc_pw);
+		memberMapper.tempPwUpdate(mbl_id, temp_enc_pw);
 		
 	}
 
 	@Override
 	public void changePw(String mbl_id, String new_mbl_password) {
-		mollysMapper.changePw(mbl_id, new_mbl_password);
+		memberMapper.changePw(mbl_id, new_mbl_password);
 		
 	}
 
 	@Override
 	public void delete(String mbl_id) {
-		mollysMapper.delete(mbl_id);
+		memberMapper.delete(mbl_id);
 		
 	}
 

@@ -195,17 +195,24 @@
  <th:block layout:fragment ="script">
 <script th:inline="javascript">
 
+		let msg = [[${msg}]];
+		if(msg =="success") {
+			alert("회원정보가 수정되었습니다.")
+		}
 
 	$(document).ready(function(){
 
         $("#btnModify").on("click", function(){
+        	
+	    	 if(msg == "kakao_login") {
+	    		 alert("SNS로그인상태이므로 회원수정이 불가능합니다.");
+	    		 return;
+	    	 }
+	    		 
             $("#modifyForm").submit();
         })
         
-        		let msg = [[${msg}]];
-		if(msg =="success") {
-			alert("회원정보가 수정되었습니다.")
-		}
+
     })
 
 </script>

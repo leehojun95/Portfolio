@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.dogmall.demo.DTO.EmailDTO;
+import com.dogmall.demo.domain.KakaoLoginVO;
 import com.dogmall.demo.domain.MemberVO;
 import com.dogmall.demo.service.EmailService;
 import com.dogmall.demo.service.MemberService;
@@ -27,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class MemberController {
 	
-	private final MemberService mollysService;
+	private final MemberService memberService;
 	
 	private final PasswordEncoder passwordEncoder;
 	
@@ -41,8 +42,9 @@ public class MemberController {
 	@PostMapping("/join")
 	public String joinOK(MemberVO vo) throws Exception{
 		
+		vo.setMbl_password(passwordEncoder.encode(vo.getMbl_password()));
 		
-		mollysService.join(vo);
+		memberService.join(vo);
 		
 		
 		return "redirect:/user/login";
@@ -56,7 +58,7 @@ public class MemberController {
 		ResponseEntity<String> entity = null;
 		
 		String idMbl ="";
-		if(mollysService.idCheck(mbl_id) != null) {
+		if(memberService.idCheck(mbl_id) != null) {
 			idMbl = "no";
 		}else {
 			idMbl = "yes";
@@ -76,7 +78,7 @@ public class MemberController {
 	@PostMapping("/login")
 	public String loginOK(String mbl_id, String mbl_password, HttpSession session, RedirectAttributes rttr) throws Exception {
 		
-		MemberVO vo = mollysService.login(mbl_id);
+		MemberVO vo = memberService.login(mbl_id);
 		
 		String msg = "";
 		String url = "/";
@@ -85,6 +87,7 @@ public class MemberController {
 		if(vo != null) {
 			
 			if(passwordEncoder.matches(mbl_password, vo.getMbl_password())) {
+				vo.setMbl_password("");
 				session.setAttribute("login_status", vo);
 			}else {
 				msg ="failPW";
@@ -121,7 +124,7 @@ public class MemberController {
 		
 		if(authcode.equals(session.getAttribute("authcode"))) {
 			
-			String mbl_id = mollysService.idfind(mbl_name, mbl_email);
+			String mbl_id = memberService.idfind(mbl_name, mbl_email);
 			if(mbl_id != null) {
 				
 				String subject = "Molly's 아이디를 보냅니다.";
@@ -169,13 +172,13 @@ public class MemberController {
 		if(authcode.equals(session.getAttribute("authcode"))) {
 			
 			// 사용자가 입력한 3게정보(아이디, 이메일, 이름)을 조건으로 사용하여, 이메일을 DB에서 가져온다.
-			String d_eamil = mollysService.pwfind(mbl_id, mbl_name, mbl_email);
+			String d_eamil = memberService.pwfind(mbl_id, mbl_name, mbl_email);
 			if(d_eamil != null) {
 				String temPw = UUID.randomUUID().toString().replaceAll("-", ""); // - 를 제거
 				temPw = temPw.substring(0, 10);
 			String enc_temPw = passwordEncoder.encode(temPw);
 			
-			mollysService.tempPwUpdate(mbl_id, enc_temPw);
+			memberService.tempPwUpdate(mbl_id, enc_temPw);
 			
 			EmailDTO dto = new EmailDTO("Molly's", "Molly's", d_eamil, "Molly's에서 임시비밀번호를 보냅니다.", temPw);
 			
@@ -201,11 +204,23 @@ public class MemberController {
 	@GetMapping("/mypage")
 	public void mypage(HttpSession session, Model model) throws Exception {
 		
-		String mbl_id =((MemberVO)session.getAttribute("login_status")).getMbl_id();
-		
-		MemberVO vo = mollysService.login(mbl_id);
-		
-		model.addAttribute("user", vo);
+		if(session.getAttribute("login_status") != null) {
+			String mbl_id = ((MemberVO) session.getAttribute("login_status")).getMbl_id();
+			MemberVO vo = memberService.login(mbl_id);
+			model.addAttribute("user", vo);
+		} else if(session.getAttribute("kakao_status") != null) {
+			
+			KakaoLoginVO kakaoLoginVO= (KakaoLoginVO) session.getAttribute("kakao_status");
+			
+			// MyPage에서 보여줄 정보를 선택적으로 작업.
+			MemberVO vo = new MemberVO();
+			vo.setMbl_name(kakaoLoginVO.getNickname());
+			vo.setMbl_email(kakaoLoginVO.getEmail());
+
+			model.addAttribute("user", vo);
+			model.addAttribute("msg", "kakao_login");
+			
+		}
 		
 	}
 	
@@ -217,7 +232,7 @@ public class MemberController {
 		
 		String mbl_id= ((MemberVO)session.getAttribute("login_status")).getMbl_id();
 		
-		mollysService.modify(vo);
+		memberService.modify(vo);
 		
 		rttr.addFlashAttribute("msg", "success");
 		
@@ -234,7 +249,7 @@ public class MemberController {
 		
 		String mbl_id =((MemberVO) session.getAttribute("login_status")).getMbl_id();
 		
-		MemberVO vo = mollysService.login(mbl_id);
+		MemberVO vo = memberService.login(mbl_id);
 		
 		String msg = "";
 		String url = "/";
@@ -243,7 +258,7 @@ public class MemberController {
 			if(passwordEncoder.matches(cur_mbl_password, vo.getMbl_password())) {
 				
 				String enc_new_mbl_password = passwordEncoder.encode(new_mbl_password);
-				mollysService.changePw(mbl_id, enc_new_mbl_password);
+				memberService.changePw(mbl_id, enc_new_mbl_password);
 				msg = "success";
 			}else {  // 사용자가 입력한 비밀번호가 암호화된 형태에 해당하지 않는 것이라면 
 				msg = "failPW";
@@ -265,7 +280,7 @@ public class MemberController {
 		
 		String mbl_id = ((MemberVO) session.getAttribute("login_status")).getMbl_id();
 		
-		MemberVO vo = mollysService.login(mbl_id);
+		MemberVO vo = memberService.login(mbl_id);
 		
 		String msg = "";
 		String url = "/";
@@ -274,7 +289,7 @@ public class MemberController {
 			
 			if(passwordEncoder.matches(mbl_password, vo.getMbl_password())) {
 				
-				mollysService.delete(mbl_id);
+				memberService.delete(mbl_id);
 				session.invalidate();
 			}else {
 				msg = "failPW";
