@@ -42,7 +42,7 @@ public class MemberController {
 	@PostMapping("/join")
 	public String joinOK(MemberVO vo) throws Exception{
 		
-		vo.setMbl_password(passwordEncoder.encode(vo.getMbl_password()));
+//		vo.setMbl_password(passwordEncoder.encode(vo.getMbl_password()));
 		
 		memberService.join(vo);
 		
@@ -130,7 +130,7 @@ public class MemberController {
 				String subject = "Molly's 아이디를 보냅니다.";
 				EmailDTO dto = new EmailDTO("Molly's", "Molly's", mbl_email, subject, mbl_id);
 				
-				emailService.sendMail("emailidfind", dto, mbl_id);
+				emailService.sendMail("mailtemplate/emailidfind", dto, mbl_id);
 				
 				session.removeAttribute("authcode");
 				
@@ -182,7 +182,7 @@ public class MemberController {
 			
 			EmailDTO dto = new EmailDTO("Molly's", "Molly's", d_eamil, "Molly's에서 임시비밀번호를 보냅니다.", temPw);
 			
-			emailService.sendMail("emailPwResult", dto, temPw);
+			emailService.sendMail("mailtemplate/emailPwResult", dto, temPw); 
 			
 			session.removeAttribute("authcode");
 			

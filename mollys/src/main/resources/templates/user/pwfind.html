@@ -85,7 +85,7 @@ if(msg == "success") {
             $.ajax({
                 url : '/email/authcode',
                 type : 'get',
-                data : {receiverMail: $("#mbl_email").val(), type : "emailPw"},
+                data : {receiverMail: $("#mbl_email").val(), type : "mailtemplate/emailPw"},
                 dataType : 'text',
                 success : function(result) {
                     if(result == "success"){

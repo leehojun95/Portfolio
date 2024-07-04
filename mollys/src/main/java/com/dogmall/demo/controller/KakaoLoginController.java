@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.dogmall.demo.DTO.SNSUserDto;
 import com.dogmall.demo.domain.KakaoLoginVO;
 import com.dogmall.demo.service.KakaoLoginService;
 import com.dogmall.demo.service.MemberService;
@@ -64,16 +65,39 @@ public class KakaoLoginController {
 		
 		try {
 			kakaoLoginVO = kakaoLoginService.getKakaoLoginVO(accessToken);
-			
-
-			session.setAttribute("kakao_status", kakaoLoginVO);
-			session.setAttribute("accessToken", accessToken);
+		
 			
 		}catch(Exception ex) {
 			ex.printStackTrace();
 		}
 		
-		log.info("사용자정보: " + kakaoLoginVO);
+		if(kakaoLoginVO != null) {
+			
+			log.info("사용자정보:" + kakaoLoginVO);
+			
+		
+			//인증을 세션방식으로 처리.
+			session.setAttribute("kakao_status", kakaoLoginVO); // 인증여부에 사용
+			session.setAttribute("accessToken", accessToken);  // 카카오 로그아웃에 사용
+			
+			String sns_email = kakaoLoginVO.getEmail();
+			
+			String sns_login_type = memberService.existsUserInfo(sns_email);
+//			session.setAttribute("sns_type", sns_login_type);
+			
+			if(memberService.existsUserInfo(sns_email) == null && memberService.sns_user_check(sns_email) == null) {
+				//SNS테이블 데이타 삽입작업.
+				SNSUserDto dto = new SNSUserDto();
+				dto.setSns_id(kakaoLoginVO.getId().toString());
+				dto.setSns_email(kakaoLoginVO.getEmail());
+				dto.setSns_nickname(kakaoLoginVO.getNickname());
+				dto.setSns_type("kakao");
+				
+				
+				memberService.sns_user_insert(dto);
+			}
+			
+		}
 		
 		return "redirect:/";
 	}

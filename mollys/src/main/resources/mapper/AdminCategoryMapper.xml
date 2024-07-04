@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dogmall.demo.mapper.AdminCategoryMapper">
+
+	<select id="getFirstCategoryList" resultType="com.dogmall.demo.domain.AdminCategoryVO">
+	
+		SELECT
+			ctg_h_code, ctg_l_code, ctg_name
+		FROM
+			category_tbl
+		WHERE	
+			ctg_l_code IS NULL
+			
+	</select>
+	
+	<select id="getSecondCategoryList" resultType="com.dogmall.demo.domain.AdminCategoryVO">
+	
+		SELECT
+			ctg_h_code, ctg_l_code, ctg_name
+		FROM
+			category_tbl
+		WHERE
+			ctg_l_code = #{ctg_l_code}
+			
+	</select>
+	
+		<select id="getFirstCategoryBySecondCategory" parameterType="int" resultType="com.dogmall.demo.domain.AdminCategoryVO">
+	
+		SELECT
+			com.dogmall.demo.domain.AdminCategoryVO
+		FROM
+			category_tbl
+		WHERE
+			ctg_l_code = #{ctg_l_code}
+	</select>
+
+</mapper>

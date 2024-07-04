@@ -76,7 +76,7 @@ if(msg == "failID") {
             $.ajax({
                 url : '/email/authcode',
                 type : 'get',
-                data : {receiverMail: $("#mbl_email").val(), type : "emailidfind"},
+                data : {receiverMail: $("#mbl_email").val(), type : "mailtemplate/emailidfindResult"},
                 dataType : 'text',
                 success : function(result) {
                     if(result == "success"){

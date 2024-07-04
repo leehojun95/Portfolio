@@ -3,6 +3,7 @@ package com.dogmall.demo.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.dogmall.demo.DTO.SNSUserDto;
 import com.dogmall.demo.domain.MemberVO;
 import com.dogmall.demo.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
@@ -70,6 +71,22 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public void delete(String mbl_id) {
 		memberMapper.delete(mbl_id);
+		
+	}
+
+	@Override
+	public String existsUserInfo(String sns_email) {
+		return memberMapper.existsUserInfo(sns_email);
+	}
+
+	@Override
+	public String sns_user_check(String sns_email) {
+		return memberMapper.sns_user_check(sns_email);
+	}
+
+	@Override
+	public void sns_user_insert(SNSUserDto dto) {
+		memberMapper.sns_user_insert(dto);
 		
 	}
 

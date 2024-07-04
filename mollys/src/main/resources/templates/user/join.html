@@ -114,13 +114,7 @@
              <div class="card-footer">   <!--  id="btnJoin" -->
             <button type="button" class="btn btn-primary" id="btnJoin">Sign up</button>
             <button type="reset" class="btn btn-default float-right">Cancel</button>
-            </div>
-            
-            <div class="card-footer">   <!--  id="btnJoin" -->
-            <button type="button" class="btn btn-primary" id="btnJoin">Sign up</button>
-            <button type="reset" class="btn btn-default float-right">Cancel</button>
-            </div>
-            
+            </div>       
             </form>
                 </div>
         </div>
@@ -265,7 +259,7 @@
             $.ajax({
                 url : '/email/authcode',
                 type : 'get',
-                data : {receiverMail: $("#mbl_email").val(), type : "emailJoin"},
+                data : {receiverMail: $("#mbl_email").val(), type : "mailtemplate/emailjoin"},
                 dataType : 'text',
                 success : function(result) {
                     if(result == "success"){

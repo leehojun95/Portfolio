@@ -2,6 +2,7 @@ package com.dogmall.demo.mapper;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.dogmall.demo.DTO.SNSUserDto;
 import com.dogmall.demo.domain.MemberVO;
 
 public interface MemberMapper {
@@ -23,4 +24,10 @@ public interface MemberMapper {
 	void changePw(@Param("mbl_id") String mbl_id, @Param("new_mbl_password") String new_mbl_password);
 	
 	void delete(String mbl_id);
+	
+	String existsUserInfo(String sns_email);
+		
+	String sns_user_check(String sns_email);
+	
+	void sns_user_insert(SNSUserDto dto);
 }

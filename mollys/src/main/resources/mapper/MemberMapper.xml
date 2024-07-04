@@ -97,5 +97,38 @@
 			mbl_id = #{mbl_id}
 	
 	</delete>
+	
+		<select id="existsUserInfo" resultType="String">
+	
+		SELECT 
+			sns_login_type
+		FROM
+			mbL_tbl
+		WHERE
+			mbL_email = #{sns_email}
+	
+	
+	</select>
+	
+	<!-- SNS 카카오, 네이버 사용자 중복체크 -->
+	<select id="sns_user_check" parameterType="String" resultType="String">
+	
+		SELECT
+			sns_email
+		FROM
+			sns_tbl
+		WHERE
+			sns_email = #{sns_email}
+	
+	</select>
+	
+	<insert id="sns_user_insert" parameterType="com.dogmall.demo.DTO.SNSUserDto">
+	
+		INSERT INTO
+			sns_tbl(sns_id, sns_nickname, sns_email, sns_type)
+		VALUES
+			(#{sns_id}, #{sns_nickname}, #{sns_email}, #{sns_type})
+			
+	</insert>
 
 </mapper>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/layout/adminlayout}">
+
+<th:block layout:fragment="content">
+	<script src="/plugins/ckeditor/ckeditor.js"></script>
+	<!-- Content Wrapper. Contains page content -->
+	<div class="content-wrapper">
+
+		<!-- Main content -->
+		<section class="content">
+
+          <div class="row">
+          	<div class="col">
+          		<div class="box box-info">
+                <div class="box-header with-border">
+                  <h3 class="box-title">상품목록</h3>
+                </div><!-- /.box-header -->
+                <!-- list start -->
+                <div class="row">
+    		<div class="col-md-12">
+    			<div class="box">
+
+					<div class="box-body">
+						<div>
+							<form action="/admin/product/pro_list" method="get" >
+									<select name="type">
+										<option selected>검색종류선택</option>
+										<option value="N">상품명</option>
+										<option value="C">상품코드</option>
+										<option value="P">제조사</option>
+										<option value="NP">상품명 or 제조사</option>
+									</select>
+									<input type="text" name="keyword" class="sidebar-form" th:value="${pageMaker.cri.keyword}" />
+									<input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum}" />
+									<input type="hidden" name="amount" th:value="${pageMaker.cri.amount}" />
+									<button type="submit" class="btn btn-primary">검색</button>
+							</form>
+						</div>
+						<table class="table table-bordered">
+							<tbody><tr>
+							    <th style="width: 2%"><input type="checkbox" id="checkAll"></th>
+								<th style="width: 8%">상품코드</th>
+								<th style="width: 25%">상품명</th>
+								<th style="width: 10%">가격</th>
+								<th style="width: 20%">등록일</th>
+								<th style="width: 15%">판매여부</th>
+								<th style="width: 10%">수정</th>
+								<th style="width: 10%">삭제</th>
+							</tr>
+							
+							<tr th:each="product : ${pro_list}">
+								<td><input type="checkbox" name="check" th:value="${product.pro_num }"></td>
+								<td>[[${product.pro_num}]]</td>
+								<td>
+									<!-- /admin/product/imageDisplaydateFolderName=값1&?fileName=값2  -->
+									<a class="move" href="#">
+									<!-- /*/    /*/-->
+									<img th:src="${'/admin/product/image_display?dateFolderName=' + product.pro_up_folder + '&fileName=s_' + product.pro_img}">
+									</a>
+									
+									<a class="move pro_name" href="#" th:text="${product.pro_name}"></a>
+								</td>
+								<td><input type="text" name="pro_price" th:value="${product.pro_price }"></td>
+								<td th:text="${#dates.format(product.pro_date, 'yyyy-MM-dd HH:mm:ss') }"></td>
+								<td>
+									<select id="pro_buy" name="pro_buy">
+										<option value="Y" th:selected="${product.pro_buy == 'Y'}">판매가능</option>
+										<option value="N" th:selected="${product.pro_buy == 'N'}">판매불가능</option>
+									</select>
+								</td>
+								<td><button type="button" class="btn btn-primary" name="btn_pro_edit" th:data-pro_num="${product.pro_num}">수정</button></td>
+								<td><button type="button" class="btn btn-danger" name="btn_pro_del" th:data-pro_num="${product.pro_num}">삭제</button></td>
+							</tr>
+							
+							
+							
+							
+							</tbody></table>
+					</div>
+					<div class="box-footer clearfix">
+						<div class="row">
+							<div class="col-md-4">
+								<button type="button" class="btn btn-primary" id="btn_check_modify1" role="button">체크상품수정1</button>	
+                				<button type="button" class="btn btn-primary" id="btn_check_modify2" role="button">체크상품수정2</button>	
+							<!--  Criteria 클래스 필드사용목적 -->
+							<!--1)페이지번호 클릭할 때 사용  [이전]  1	 2	3	4	5 [다음]  -->
+							<!--2)목록에서 상품이미지 또는 상품명 클릭할 때 사용   -->
+							  <form id="actionForm" action="" method="get">
+								<input type="hidden" name="pageNum" id="pageNum" th:value="${pageMaker.cri.pageNum}" />
+								<input type="hidden" name="amount"  id="amount" th:value="${pageMaker.cri.amount}" />
+								<input type="hidden" name="type" id="type" th:value="${pageMaker.cri.type}" />
+								<input type="hidden" name="keyword" id="keyword" th:value="${pageMaker.cri.keyword}" />
+								
+							  </form>
+							</div>
+							<div class="col-md-6 text-center">
+								<nav aria-label="...">
+								<ul class="pagination">
+									<!-- 이전 표시여부 -->
+									
+									<th:block th:if="${pageMaker.prev }">
+										<li class="page-item">
+											<a th:href="${pageMaker.startPage - 1 }" class="page-link movepage">Previous</a>
+										</li>
+									</th:block>
+									
+									<!-- https://jbground.tistory.com/40 페이지번호 출력 -->
+									<!-- 1	2	3	4	5 6	7	8	9	10  [다음] -->
+									<!-- [이전] 11	12	13	14	15 16	17	18	19	20   -->
+
+									<th:block th:with="pageMaker = ${pageMaker}">
+										<th:block th:each="num : *{#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}">
+										<li class='page-item' th:classappend="${pageMaker.cri.pageNum ==  num ? 'active': '' }" aria-current="page">
+											<a class="page-link movepage" th:href="${num }" th:text="${num }"></a>
+										</li>
+										</th:block>
+									</th:block>
+
+									<!--  다음 표시여부 -->
+									<th:block th:if="${pageMaker.next }">
+									  <li class="page-item">
+										<a th:href="${pageMaker.endPage + 1 }" class="page-link movepage">Next</a>
+									  </li>
+									</th:block>
+									
+								</ul>
+								</nav>
+							</div>
+							<div class="col-md-2 text-right"><a th:href="@{/admin/product/pro_insert}"  class="btn btn-primary" id="btn_pro_insert">상품등록</a></div>
+						</div>
+						
+					</div>
+			   </div>
+    		</div>
+    	</div>
+              </div>
+          	</div>
+          </div>
+
+		</section>
+	</div>
+</th:block>
+
+<th:block layout:fragment="script">
+	<script>
+
+		$(document).ready(function () {
+
+			$("#btn_firstCategory").on("change", function () {
+
+				let ctg_h_code = $("#btn_firstCategory").val();
+
+				let url = "/admin/category/secondcategory/" + ctg_h_code;
+
+				$.getJSON(url, function (secondcategory_result) {
+					let btn_secondCategory = $("#btn_secondCategory");
+					let optionStr = "";
+
+					for (let i = 0; i < secondcategory_result.length; i++) {
+						optionStr += "<option value='" + secondcategory_result[i].ctg_h_code + "'>" + secondcategory_result[i].ctg_name + "</option>";
+					}
+
+					btn_secondCategory.find("option").remove();
+					btn_secondCategory.append("<option>2차카테고리 선택</option>");
+					btn_secondCategory.append(optionStr);
+				});
+
+			});
+
+			let actionForm = $("#actionForm");
+
+			$(".movepage").on("click", function(e){
+				e.preventDefault();
+				actionForm.attr("action", "/admin/product/pro_list");
+				actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+				actionForm.submit();
+			});
+		});
+
+	</script>
+</th:block>
+
+</html>

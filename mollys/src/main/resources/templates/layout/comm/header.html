@@ -8,19 +8,18 @@
             <a class="navbar-brand" th:href="@{/}">Molly's</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <th:block th:if="${session.login_status == null and session.kakao_status == null}">
+                <div th:if="${session.login_status == null and session.kakao_status == null and session.naver_status == null}">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                         <li class="nav-item"><a class="nav-link active" th:href="@{/user/login}">로그인</a></li>
                         <li class="nav-item"><a class="nav-link active" th:href="@{/user/join}">회원가입</a></li>
                     </ul>
-                </th:block>
-                <th:block th:if="${session.login_status != null or session.kakao_status != null}">
+                </div>
+                <div th:if="${session.login_status != null or session.kakao_status != null or session.naver_status != null}">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item"><a class="nav-link active" th:text="${session.login_status != null ? session.login_status.mbl_name : session.kakao_status.nickname}" th:href="@{/user/mypage}"></a></li>
                         <li class="nav-item"><a class="nav-link active" th:href="@{/user/logout}">로그아웃</a></li>
                         <li class="nav-item"><a class="nav-link active" th:href="@{/user/mypage}">마이페이지</a></li>
                     </ul>
-                </th:block>
+                </div>
                 <form class="d-flex">
                     <button class="btn btn-outline-dark" type="submit">
                         <i class="bi-cart-fill me-1"></i>
@@ -40,6 +39,5 @@
             </div>
         </div>
     </header>
-
-</th:block>
+</body>
 </html>
