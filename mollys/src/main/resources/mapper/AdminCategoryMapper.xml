@@ -24,14 +24,15 @@
 			
 	</select>
 	
-		<select id="getFirstCategoryBySecondCategory" parameterType="int" resultType="com.dogmall.demo.domain.AdminCategoryVO">
-	
-		SELECT
-			com.dogmall.demo.domain.AdminCategoryVO
-		FROM
-			category_tbl
-		WHERE
-			ctg_l_code = #{ctg_l_code}
-	</select>
+<select id="getFirstCategoryBySecondCategory" parameterType="int" resultType="com.dogmall.demo.domain.AdminCategoryVO">
+    SELECT
+        ctg_h_code, ctg_l_code, ctg_name
+    FROM
+        category_tbl
+    WHERE
+        ctg_h_code = #{ctg_h_code}
+</select>
+
+
 
 </mapper>
