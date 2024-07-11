@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/layoutbasic}">
+    
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
+        <style>
+            p#star_rev_rate a.rev_rate {
+                font-size: 22px;
+                text-decoration: none;
+                color: lightgray;
+            }
+
+			p#star_rev_rate a.rev_rate.on {
+				color: red;
+			}
+        </style>
+        
+        
+        <!-- 1) Include Handlebars from a CDN -->
+		<script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+  
+        <script id="review-template" type="text/x-handlebars-template">
+            <table id="revtable" class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">번호</th>
+                        <th scope="col">제목</th>
+                        <th scope="col">내용</th>
+                        <th scope="col">평점</th>
+                        <th scope="col">작성자</th>
+                        <th scope="col">등록일</th>
+                        <th scope="col">비고</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each .}} 
+                    <tr>
+                        <th scope="row">{{rev_code}}</th>
+                        <td>{{rev_title}}</td>
+                        <td>{{rev_content}}</td>
+                        <td>{{displayStar rev_rate}}</td>
+                        <td>{{mbl_id}}</td>
+                        <td>{{convertDate rev_date}}</td>
+                        <td>{{authControlView mbl_id  rev_code}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </script>
+    </th:block>
+  
+    <body>
+
+        <th:block layout:fragment="content">
+    
+            <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+                <h3 class="display-6" th:utext="${cat_name}"></h3>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-6">
+                        <img th:src="${'/product/image_display?dateFolderName=' + product.pro_up_folder + '&fileName=s_' + product.pro_img}" style="width: 60%;height: 255px;">
+                    </div>
+                    <div class="col-6">
+                        <form>
+                            <div class="form-group">
+                                <span id="info_pro_name" th:text="${product.pro_name}">이름</span>
+                                <small class="text-muted">(review : 0)</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">판매가격: </label><span th:text="${#numbers.formatInteger(product.pro_price, 3, 'COMMA') + '원'}"></span>
+                            </div>
+                            <div class="form-group">
+                                <label>수량</label>
+                                <input type="number" class="form-control" value="1" id="btn_cart_amount">
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-secondary" style="width: 100%;" th:data-pro_num="${product.pro_num}" id="btn_direct_order">BUY IT NOW</button>
+                                <button type="button" class="btn btn-light" style="width: 100%;" th:data-pro_num="${product.pro_num}" id="btn_cart_add">ADD TO CART</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+ 
+                <div class="row">
+                    <div class="col">
+                        <div id="pro_info">
+                            <ul>
+                                <li><a href="#pro_detail">상세정보</a></li>
+                                <li><a href="#pro_review">상품리뷰(0)</a></li>
+                                <li><a href="#pro_qna">Q&A</a></li>
+                            </ul>
+                            <div id="pro_detail">
+                                <p th:utext="${product.pro_content}"></p>
+                            </div>
+                            <div id="pro_review">
+                                <p><button type="button" class="btn btn-link" id="btn_review_modal">상품후기작성</button></p>
+                                <!-- 상품후기가 출력될 위치 -->
+                                <div id="review_list"></div>
+                                <!-- 페이징 출력될 위치 -->
+                                <div id="review_paging"></div>
+                            </div>
+                            <div id="pro_qna">
+                                <p>강아지를 위한</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="reivew_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="message-text" class="col-form-label">제목</label>
+                                    <input type="text" class="form-control" id="rev_title">
+                                  </div>
+                                <div class="form-group">
+                                  <label for="message-text" class="col-form-label">내용</label>
+                                  <textarea class="form-control" id="rev_content"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="recipient-name" class="col-form-label">별평점</label>
+                                    <p id="star_rev_rate">
+                                      <a class="rev_rate" href="#">★</a>
+                                      <a class="rev_rate" href="#">★</a>
+                                      <a class="rev_rate" href="#">★</a>
+                                      <a class="rev_rate" href="#">★</a>
+                                      <a class="rev_rate" href="#">★</a>
+                                    </p>
+                                </div>
+                              </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" id="btn_review_save" class="btn btn-primary" th:data-pro_num="${product.pro_num }" >상품후기저장</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+
+<th:block layout:fragment="script">
+ <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
+<script th:inline="javascript">
+            
+            
+            $(document).ready(function() {
+                // jQuery UI Tabs 초기화
+                $("#pro_info").tabs();
+
+                $("button#btn_cart_add").on("click", function() {
+                    console.log("장바구니추가");
+
+                    let pro_num = $(this).data("pro_num");
+                    let cart_amount = $("#btn_cart_amount").val();
+
+                    $.ajax({
+                        url: '/cart/cart_add',
+                        type: 'get',
+                        data: {pro_num: pro_num, cart_amount: cart_amount},
+                        dataType: "text",
+                        success: function(result) {
+                            if(result == 'success') {
+                                alert("장바구니에 등록되었습니다.");
+                                if(confirm("장바구니로 이동하시겠습니까?")) {
+                                    location.href = "/cart/cart_list";
+                                }
+                            }
+                        }
+                    });
+                });
+
+                $("button[name='btn_direct_order']").on("click", function() {
+                    // 필요한 기능 추가
+                });
+
+                let reviewPage = 1;
+                let url = "/review/revlist/" + [[${product.pro_num}]] + "/" + reviewPage;
+
+                getReviewList(url);
+
+                function getReviewList(url) {
+                    $.getJSON(url, function(reviewlist) {
+                        print_reviewlist(reviewlist.revlist, $("#review_list"), $("#review-template"));
+                        print_paging(reviewlist.pageMaker, $("#review_paging"));
+                    });
+                }
+
+                let print_reviewlist = function(reviewData, target, template) {
+                    let templateObj = Handlebars.compile(template.html());
+                    let reviewHtml = templateObj(reviewData);
+                    target.children().remove();
+                    target.append(reviewHtml);
+                }
+
+                let print_paging = function(pageData, target) {
+                    let str = `<nav aria-label="Page navigation example">`;
+                        str += `<ul class="pagination">`;
+                    
+                    if(pageData.prev) {
+                        str += `<li class="page-item">`;
+                        str += `<a class="page-link" href="${pageData.startPage - 1}" aria-label="Previous">`;
+                        str += `<span aria-hidden="true">[prev]</span>`;
+                        str += `</a></li>`;
+                    }
+
+                    for(let i=pageData.startPage; i<=pageData.endPage; i++) {
+                        let className = pageData.cri.pageNum == i ? 'active' : '';
+                        str += `<li class="page-item ${className}"><a class="page-link" href="${i}">${i}</a></li>`;
+                    }
+
+                    if(pageData.next) {
+                        str += `<li class="page-item">`;
+                        str += `<a class="page-link" href="${pageData.endPage + 1}" aria-label="Next">`;
+                        str += `<span aria-hidden="true">[next]</span>`;
+                        str += `</a></li>`;
+                    }
+
+                    str += `</ul></nav>`;
+                    target.html(str);
+                }
+
+                Handlebars.registerHelper("displayStar", function(rating) {
+                    let star = "";
+                    switch(rating) {
+                        case 1:
+                            star = "★☆☆☆☆";
+                            break;
+                        case 2:
+                            star = "★★☆☆☆";
+                            break;
+                        case 3:
+                            star = "★★★☆☆";
+                            break;
+                        case 4:
+                            star = "★★★★☆";
+                            break;
+                        case 5:
+                            star = "★★★★★";
+                            break;
+                    }
+                    return star;
+                });
+
+                Handlebars.registerHelper("convertDate", function(rev_date) {
+                    const d = new Date(rev_date);
+                    let year = d.getFullYear();
+                    let month = d.getMonth() + 1;
+                    let date = d.getDate();
+                    let hour = d.getHours();
+                    let minute = d.getMinutes();
+
+                    return `${year}/${month}/${date} ${hour}:${minute}`;
+                });
+
+                Handlebars.registerHelper("authControlView", function(mbl_id, rev_code) {
+
+                    let loginVo = /*[[${session.login_status}]]*/;
+
+                    let loginId = "";
+                    if(loginId !== null) {
+                        loginId = /*[[${session.login_status == null ? '' : session.login_status.mbl_id}]]*/;
+                    }
+
+                    let str = "";
+                    if(loginId == mbl_id) {
+                        str += `<button type="button" name="btn_review_edit" class="btn btn-link" data-rev_code="${rev_code}">edit</button>`;
+                        str += `<button type="button" name="btn_review_delete" class="btn btn-link" data-rev_code="${rev_code}">delete</button>`;
+                    }
+                    return new Handlebars.SafeString(str);
+                });
+
+                $("#review_paging").on("click", "nav ul.pagination a", function(e) {
+                    e.preventDefault();
+                    reviewPage = $(this).attr("href");
+
+                    url = "/review/revlist/" + [[${product.pro_num}]] + "/" + reviewPage;
+                    getReviewList(url);
+                });
+
+                $("#btn_review_modal").on("click", function() {
+                    $("#reivew_modal").modal('show');
+                });
+
+                $("p#star_rev_rate a.rev_rate").on("click", function(e) {
+                    e.preventDefault();
+                    $(this).parent().children().removeClass("on"); 
+                    $(this).addClass("on").prevAll("a").addClass("on"); 
+        
+                });
+
+                $("button#btn_review_save").on("click", function() {
+                    let pro_num = $(this).data("pro_num");
+                    //console.log(pro_num);
+                    let rev_title = $("#rev_title").val();
+                    let rev_content = $("#rev_content").val();
+                    let rev_rate = 0;
+        
+                    $("p#star_rev_rate a.rev_rate").each(function() {
+                        if($(this).attr("class") == "rev_rate on") {
+                            rev_rate += 1;
+                        }
+                    });
+        
+                    if(rev_title == "") {
+                        alert("제목을 입력하세요");
+                        return;
+                    }
+        
+                    if(rev_content == "") {
+                        alert("내용을 입력하세요");
+                        return;
+                    }
+        
+                    if(rev_rate == 0) {
+                        alert("별평점을 선택하세요");
+                        return;
+                    }
+        
+                    // 자바스크립트 object문법사용
+                    let review_data = {pro_num : pro_num, rev_title: rev_title, rev_content : rev_content, rev_rate : rev_rate};
+        
+                    $.ajax({
+                        url : '/review/review_save',
+                        // 브라우저는 요청방식이 get, post만 지원을 한다.
+                        // rest api개발에서는 get, post, delete, put, patch 요청방식을 지원하므로, 
+                        // 스프링 컨트롤러에서 rest api로 매핑주소가 설정되어 있으면,
+                        // 아래와 같이 "X-HTTP-Method-Override" : "요청방식" 으로 코드를 구성해줘야, 정상적으로 스프링주소를 호출이 가능해진다.
+                        headers: {
+                            "Content-Type" : "application/json", "X-HTTP-Method-Override" : "POST"
+                        },
+                        type: 'post',
+                        data : JSON.stringify(review_data),  // 자바스크립트 object문법을 json으로 변환하는 작업
+                        datatype : 'text',
+                        success : function(result) {
+                            if(result == "success") {
+                                alert("상품후기가 등록됨");
+                                $("#review_modal").modal('hide');
+                                getReviewList(url); // 상품후기목록가페이징정보를 갱신.
+                            }
+                        }
+                    });
+        
+        
+                });
+
+                $("div#review_list").on("click", "button[name='btn_review_delete']", function() {
+                    if(!confirm("상품후기를 삭제하시겠습니까?")) return;
+                    
+                    let rev_code = $(this).data("rev_code");
+                    $.ajax({
+                        url : '/review/review_delete/' + rev_code,
+                        // 브라우저는 요청방식이 get, post만 지원을 한다.
+                        // rest api개발에서는 get, post, delete, put, patch 요청방식을 지원하므로, 
+                        // 스프링 컨트롤러에서 rest api로 매핑주소가 설정되어 있으면,
+                        // 아래와 같이 "X-HTTP-Method-Override" : "요청방식" 으로 코드를 구성해줘야, 정상적으로 스프링주소를 호출이 가능해진다.
+                        headers: {
+                            "Content-Type" : "application/json", "X-HTTP-Method-Override" : "DELETE"
+                        },
+                        type: 'DELETE',
+                        datatype : 'text',
+                        success : function(result) {
+                            if(result == "success") {
+                                alert("상품후기가 삭제됨");
+                                getReviewList(url); // 상품후기목록가페이징정보를 갱신.
+                            }
+                        }
+                    });
+                });
+                
+            });
+            </script>
+        </th:block>
+    </body>
+</html>

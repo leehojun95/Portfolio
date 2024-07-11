@@ -6,7 +6,7 @@
 
 <body>
 <header th:replace="~{layout/comm/header :: headerFragment}"></header>
-
+<div th:replace ="~{layout/comm/category :: categoryFragment}" ></div>
   <th:block layout:fragment = "content">
   
   </th:block>
@@ -21,5 +21,51 @@
   <th:block layout:fragment ="script">
   <!-- 각각의 페이지에서 필요한 자바스크립트 작성 -->
   </th:block> 
+  
+  <script>
+        $(document).ready(function() {
+            // 1차카테고리 선택
+            $("div#category_menu li a").on("mouseover", function(e) {
+                e.preventDefault();
+                
+                let cur_first_category = $(this);
+                
+                let ctg_h_code = $(this).data("ctg_h_code");
+
+                // 2차카테고리 주소
+                let url = "/admin/category/secondcategory/" + ctg_h_code;
+
+                $.getJSON(url, function(secondcategory_result) {
+                    let str = '<ul class="nav justify-content-center" id="second_category">';
+
+                    for (let i = 0; i < secondcategory_result.length; i++) {
+                        str += '<li class="nav-item">';
+                        str += `<a class="nav-link active" href="#" data-ctg_h_code="${secondcategory_result[i].ctg_h_code}">${secondcategory_result[i].ctg_name}</a>`;
+                        str += '</li>';
+                    }
+
+                    str += "</ul>";
+
+                    cur_first_category.parents("div#category_menu").find("ul#second_category").remove();
+                    cur_first_category.parents("div#category_menu").append(str);
+                });
+            });
+
+            // 2차카테고리 선택
+            $("div#category_menu").on("click", "ul#second_category li a", function(e) {
+                e.preventDefault();
+
+                let ctg_h_code = $(this).data("ctg_h_code");
+                let ctg_name = encodeURIComponent($(this).html()); // 인코딩작업
+
+                console.log("2차카테고리코드", ctg_h_code);
+                console.log("2차카테고리이름", ctg_name);
+
+                // ctg_name에 특수문자가 포함된 경우 encodeURIComponent를 사용하여 인코딩합니다.
+                // 예: ctg_name=맨투맨&후드티 -> 맨투맨%26후드티
+                location.href = `/product/pro_list?ctg_h_code=${ctg_h_code}&ctg_name=${ctg_name}`;
+            });
+        });
+    </script>
 </body>
 </html>

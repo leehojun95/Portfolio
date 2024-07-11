@@ -1,211 +1,228 @@
 <!doctype html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layoutbasic}">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/layoutbasic}">
+
 <body>
 
-<th:block layout:fragment="content">
+    <th:block layout:fragment="content">
         <!-- Section-->
         <section class="py-5">
             <div class="container px-4 px-lg-5 mt-5">
                 <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                    <div class="col mb-5">
+                    <div class="col mb-5" th:each="product : ${pro_list}">
                         <div class="card h-100">
                             <!-- Product image-->
-                            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                            <!-- Product details-->
+                             <a class="move" th:href="@{/product/pro_detail(pro_num = ${product.pro_num})}">
+                            <img class="card-img-top"
+                                th:src="${'/product/image_display?dateFolderName=' + product.pro_up_folder + '&fileName=s_' + product.pro_img}">
+                            </a>
+                                <!-- Product details-->
                             <div class="card-body p-4">
                                 <div class="text-center">
                                     <!-- Product name-->
-                                    <h5 class="fw-bolder">Fancy Product</h5>
+                                     <a th:href="@{/product/pro_detail(pro_num = ${product.pro_num})}">
+                                    <h5 class="fw-bolder" th:text="${product.pro_name}"></h5>
+                                    </a>
                                     <!-- Product price-->
-                                    $40.00 - $80.00
+                                    <span
+                                        th:text="${#numbers.formatInteger(product.pro_price, 3, 'COMMA') + '원'}"></span>
                                 </div>
                             </div>
                             <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">View options</a></div>
+                            <div class="card-footer p-3 pt-0 border-top-0 bg-transparent text-center">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" name="btn_direct_order"
+                                    th:data-pro_num="${product.pro_num}">구매하기</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" name="btn_cart_add"
+                                    th:data-pro_num="${product.pro_num}">장바구니</button>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Sale badge-->
-                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                            <!-- Product image-->
-                            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Special Item</h5>
-                                    <!-- Product reviews-->
-                                    <div class="d-flex justify-content-center small text-warning mb-2">
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                    </div>
-                                    <!-- Product price-->
-                                    <span class="text-muted text-decoration-line-through">$20.00</span>
-                                    $18.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Sale badge-->
-                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                            <!-- Product image-->
-                            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Sale Item</h5>
-                                    <!-- Product price-->
-                                    <span class="text-muted text-decoration-line-through">$50.00</span>
-                                    $25.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Product image-->
-                            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Popular Item</h5>
-                                    <!-- Product reviews-->
-                                    <div class="d-flex justify-content-center small text-warning mb-2">
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                    </div>
-                                    <!-- Product price-->
-                                    $40.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Sale badge-->
-                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                            <!-- Product image-->
-                            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Sale Item</h5>
-                                    <!-- Product price-->
-                                    <span class="text-muted text-decoration-line-through">$50.00</span>
-                                    $25.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Product image-->
-                            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Fancy Product</h5>
-                                    <!-- Product price-->
-                                    $120.00 - $280.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">View options</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Sale badge-->
-                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                            <!-- Product image-->
-                            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Special Item</h5>
-                                    <!-- Product reviews-->
-                                    <div class="d-flex justify-content-center small text-warning mb-2">
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                    </div>
-                                    <!-- Product price-->
-                                    <span class="text-muted text-decoration-line-through">$20.00</span>
-                                    $18.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Product image-->
-                            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Popular Item</h5>
-                                    <!-- Product reviews-->
-                                    <div class="d-flex justify-content-center small text-warning mb-2">
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                        <div class="bi-star-fill"></div>
-                                    </div>
-                                    <!-- Product price-->
-                                    $40.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                            </div>
+                            <small class="text-right">(review : 0)</small>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-4">
+            
+                <!--  Criteria 클래스 필드사용목적 -->
+                <!--1)페이지번호 클릭할 때 사용  [이전]  1	 2	3	4	5 [다음]  -->
+                <!--2)목록에서 상품이미지 또는 상품명 클릭할 때 사용   -->
+                  <form id="actionForm" action="" method="get">
+                    <input type="hidden" name="pageNum" id="pageNum" th:value="${pageMaker.cri.pageNum}" />
+                    <input type="hidden" name="amount"  id="amount" th:value="${pageMaker.cri.amount}" />
+                    <input type="hidden" name="type" id="type" th:value="${pageMaker.cri.type}" />
+                    <input type="hidden" name="keyword" id="keyword" th:value="${pageMaker.cri.keyword}" />
+                    
+                    <input type="hidden" name="ctg_h_code" id="ctg_h_code" th:value="${ctg_h_code}" />
+                    <input type="hidden" name="ctg_name" id="ctg_name" th:value="${ctg_name}" />
+                    
+                    
+                  </form>
+                </div>
+                <div class="col-md-6 text-center">
+                    <nav aria-label="...">
+                    <ul class="pagination">
+                        <!-- 이전 표시여부 -->
+                        
+                        <th:block th:if="${pageMaker.prev }">
+                            <li class="page-item">
+                                <a th:href="${pageMaker.startPage - 1 }" class="page-link movepage">Previous</a>
+                            </li>
+                        </th:block>
+                        
+                        <!-- https://jbground.tistory.com/40 페이지번호 출력 -->
+                        <!-- 1	2	3	4	5 6	7	8	9	10  [다음] -->
+                        <!-- [이전] 11	12	13	14	15 16	17	18	19	20   -->
+        
+                        <th:block th:with="pageMaker = ${pageMaker}">
+                            <th:block th:each="num : *{#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}">
+                            <li class='page-item' th:classappend="${pageMaker.cri.pageNum ==  num ? 'active': '' }" aria-current="page">
+                                <a class="page-link movepage" th:href="${num }" th:text="${num }"></a>
+                            </li>
+                            </th:block>
+                        </th:block>
+        
+                        <!--  다음 표시여부 -->
+                        <th:block th:if="${pageMaker.next }">
+                          <li class="page-item">
+                            <a th:href="${pageMaker.endPage + 1 }" class="page-link movepage">Next</a>
+                          </li>
+                        </th:block>
+                        
+                    </ul>
+                    </nav>
+                </div>
+        
+            </div>
         </section>
-</th:block>
 
-</body>
+        <!-- Modal 1 -->
+<div class="modal fade" id="order_process_popup" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+              <div class="col-6">
+                  <img src="" id="info_pro_img" style="width: 100%;height: 255px;">
+              </div>
+              <div class="col-6">
+              <form>
+                  <div class="form-group">
+                      <span id="info_pro_name">이름</span>
+                  </div>
+                    <div class="form-group">
+                      <label for="exampleFormControlInput1">판매가격: </label><span id="info_pro_price">가격</span>
+                  </div>
+                  <div class="form-group">
+                      <label>수량</label>
+                      <input type="text" class="form-control" value="1">
+                  </div>
+                  <div class="form-group">
+                      <button type="button" class="btn btn-secondary" style="width: 100%;">BUY IT NOW</button>
+                      <button type="button" class="btn btn-light" style="width: 100%;">ADD TO CART</button>
+                  </div>
+              </form>
+              
+              </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2 -->
+<div class="modal fade" id="order_process_popup_2" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel2">Modal title</h5>
+          <button type="button" id="btn_close" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <!-- load()메서드를 이용하여, pro_info.html파일이 실행된 내용이 삽입된다. -->
+        <div class="modal-body" id="popup_info">
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+    </th:block>
+
+
+<th:block layout:fragment="script">
+    <script>
+
+
+        $(document).ready(function () {
+            let actionForm = $("#actionForm");
+
+            // 페이지번호 클릭시(이전  1  2	 3	4	5  다음) actionForm 을 사용한다.
+            $(".movepage").on("click", function (e) {
+                e.preventDefault(); // a태그의 href기능을 제거.
+                // 주소변경
+                actionForm.attr("action", "/product/pro_list");
+
+                // 1)클릭한 페이지번호 작업
+                actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+                actionForm.submit();
+            });
+
+            $("button[name ='btn_cart_add']").on("click",function(){
+
+                $('#order_process_popup_2').modal('show');
+
+                let pro_num = $(this).data("pro_num");
+
+                $("#popup_info").load("/product/pro_info_2?pro_num=" + pro_num);
+            });
+
+
+            $("button[name ='btn_direct_order']").on("click", function(){
+
+                $("#order_process_popup_2").modal('show');
+
+                let pro_num = $(this).data("pro_num");
+
+                $("#popup_info").load("/product/pro_info_2?pro_num=" + pro_num);
+
+            });
+
+
+            $("#order_process_popup_2").on("click", "button#btn_cart_add", function(){
+
+                console.log("장바구니추가");
+
+                let pro_num = $(this).data("pro_num");
+                let cart_amount = $("#btn_cart_amount").val();
+
+                $.ajax({
+                    url : '/cart/cart_add',
+                    type : 'get',
+                    data : {pro_num : pro_num, cart_amount : cart_amount},
+                    dataType : "text",
+                    success : function(result) {
+                        if(result == 'success') {
+                            alert("장바구니에 등록되었습니다.")
+                            if(confirm("장바구니로 이동하시겠습니까?")){
+                                location.href = "/cart/cart_list";
+                            }
+                            $("#order_process_popup_2").modal('hide');
+                        }
+                    }
+                });
+            });
+
+        });
+    </script>
+    </th:block>
+    </body>
+    </html>

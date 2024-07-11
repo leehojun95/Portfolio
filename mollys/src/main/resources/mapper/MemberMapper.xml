@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dogmall.demo.mapper.MemberMapper">
+<mapper namespace="com.dogmall.demo.member.MemberMapper">
 
 <select id="idCheck" parameterType="String" resultType="String">
     SELECT 
@@ -11,7 +11,7 @@
         mbl_id = #{mbl_id}
 </select>
 
-<insert id="join" parameterType="com.dogmall.demo.domain.MemberVO">
+<insert id="join" parameterType="com.dogmall.demo.member.MemberVO">
 
 	INSERT INTO 
 		mbl_tbl(mbl_id, mbl_password, mbl_email, mbl_name, mbl_brith, mbl_zip_code, mbl_addr, mbl_addr_detail, mbl_phone, mbl_gender) 
@@ -19,7 +19,7 @@
 		(#{mbl_id}, #{mbl_password}, #{mbl_email}, #{mbl_name}, #{mbl_brith}, #{mbl_zip_code}, #{mbl_addr}, #{mbl_addr_detail}, #{mbl_phone}, #{mbl_gender}) 
 </insert>
 
-<select id="login" resultType="com.dogmall.demo.domain.MemberVO"  parameterType="String" >
+<select id="login" resultType="com.dogmall.demo.member.MemberVO"  parameterType="String" >
 
 	SELECT
 		mbl_id, mbl_password, mbl_email, mbl_name, mbl_brith, mbl_zip_code, mbl_addr, mbl_addr_detail, mbl_phone, mbl_gender, mbl_point, mbl_regdate, mbl_updatedate
@@ -29,7 +29,7 @@
         mbl_id = #{mbl_id}
 </select>
 
-<update id="modify" parameterType="com.dogmall.demo.domain.MemberVO">
+<update id="modify" parameterType="com.dogmall.demo.member.MemberVO">
 	
 	UPDATE
 		mbl_tbl
@@ -122,7 +122,7 @@
 	
 	</select>
 	
-	<insert id="sns_user_insert" parameterType="com.dogmall.demo.DTO.SNSUserDto">
+	<insert id="sns_user_insert" parameterType="com.dogmall.demo.member.SNSUserDto">
 	
 		INSERT INTO
 			sns_tbl(sns_id, sns_nickname, sns_email, sns_type)
