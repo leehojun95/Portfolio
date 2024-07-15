@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -50,6 +51,7 @@ public class ReviewController {
 		
 		entity = new ResponseEntity<Map<String,Object>>(map, HttpStatus.OK);
 		
+		
 		return entity;
 	}
 	
@@ -66,6 +68,30 @@ public class ReviewController {
 		
 		return entity;
 	}
+	
+	@GetMapping("/review_modify/{rev_code}")
+	public ResponseEntity<ReviewVO> review_modify(@PathVariable("rev_code") Long rev_code) throws Exception{
+		
+		ResponseEntity<ReviewVO> entity =null;
+		
+		entity = new ResponseEntity<ReviewVO>(reviewService.review_modify(rev_code), HttpStatus.OK);
+		
+		return entity;
+	}
+	
+	@PutMapping("/review_modify")
+	public ResponseEntity<String> review_modify(@RequestBody ReviewVO vo) throws Exception {
+		
+		ResponseEntity<String> entity = null;
+		
+		reviewService.review_update(vo);
+		
+		entity = new ResponseEntity<String> ("success", HttpStatus.OK);
+		
+		return entity;
+	}
+	
+	
 	
 	@DeleteMapping("/review_delete/{rev_code}")
 	public ResponseEntity<String> review_delete(@PathVariable("rev_code") Long rev_code) throws Exception{

@@ -36,12 +36,13 @@
 												<div>
 													<form action="/admin/product/pro_list" method="get">
 														<select name="type">
-															<option selected>검색종류선택</option>
-															<option value="N">상품명</option>
-															<option value="C">상품코드</option>
-															<option value="P">제조사</option>
-															<option value="NP">상품명 or 제조사</option>
+														    <option th:selected="${pageMaker.cri.type == null}">검색종류선택</option>
+														    <option value="N" th:selected="${pageMaker.cri.type == 'N'}">상품명</option>
+														    <option value="C" th:selected="${pageMaker.cri.type == 'C'}">상품코드</option>
+														    <option value="P" th:selected="${pageMaker.cri.type == 'P'}">제조사</option>
+														    <option value="NP" th:selected="${pageMaker.cri.type == 'NP'}">상품명 or 제조사</option>
 														</select>
+
 														<input type="text" name="keyword"
 															th:value="${pageMaker.cri.keyword}" />
 														<input type="hidden" name="pageNum"
@@ -231,8 +232,10 @@
 					// 페이지번호 클릭시(이전  1  2	 3	4	5  다음) actionForm 을 사용한다.
 					$(".movepage").on("click", function (e) {
 						e.preventDefault(); // a태그의 href기능을 제거.
+						
 						// 주소변경
 						actionForm.attr("action", "/admin/product/pro_list");
+
 						//클릭한 페이지번호 작업
 						actionForm.find("input[name='pageNum']").val($(this).attr("href"));
 

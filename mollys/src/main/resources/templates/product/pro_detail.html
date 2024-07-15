@@ -109,7 +109,7 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="reivew_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="review_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -123,6 +123,7 @@
                                 <div class="form-group">
                                     <label for="message-text" class="col-form-label">제목</label>
                                     <input type="text" class="form-control" id="rev_title">
+                                    <input type="hidden" class="form-control" id="rev_code">
                                   </div>
                                 <div class="form-group">
                                   <label for="message-text" class="col-form-label">내용</label>
@@ -143,6 +144,7 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="button" id="btn_review_save" class="btn btn-primary" th:data-pro_num="${product.pro_num }" >상품후기저장</button>
+                            <button type="button" id="btn_review_modify" class="btn btn-primary" th:data-pro_num="${product.pro_num }" >상품후기수정</button>
                         </div>
                     </div>
                 </div>
@@ -178,10 +180,6 @@
                             }
                         }
                     });
-                });
-
-                $("button[name='btn_direct_order']").on("click", function() {
-                    // 필요한 기능 추가
                 });
 
                 let reviewPage = 1;
@@ -273,11 +271,14 @@
                     }
 
                     let str = "";
-                    if(loginId == mbl_id) {
+                    if(loginVo !== null &&  loginId == mbl_id) {
                         str += `<button type="button" name="btn_review_edit" class="btn btn-link" data-rev_code="${rev_code}">edit</button>`;
                         str += `<button type="button" name="btn_review_delete" class="btn btn-link" data-rev_code="${rev_code}">delete</button>`;
+                        
+                        return new Handlebars.SafeString(str);
+                    }else {
+                        return "";
                     }
-                    return new Handlebars.SafeString(str);
                 });
 
                 $("#review_paging").on("click", "nav ul.pagination a", function(e) {
@@ -289,7 +290,10 @@
                 });
 
                 $("#btn_review_modal").on("click", function() {
-                    $("#reivew_modal").modal('show');
+
+                    $("#btn_review_save").show();
+                    $("#btn_review_modify").hide();
+                    $("#review_modal").modal('show');
                 });
 
                 $("p#star_rev_rate a.rev_rate").on("click", function(e) {
@@ -354,6 +358,104 @@
         
                 });
 
+                // 상품후기 수정폼 name="btn_review_edit"
+                $("div#review_list").on("click", "button[name='btn_review_edit']", function() {
+                    let rev_code = $(this).data("rev_code");
+        
+                    $.ajax({
+                        url : '/review/review_modify/' + rev_code,
+                        headers: {
+                            "Content-Type" : "application/json", "X-HTTP-Method-Override" : "GET"
+                        },
+                        type: 'get',
+                        datatype : 'json',
+                        success : function(result) {
+                            console.log(result);
+        
+                            // modal 내용에 상품후기 출력작업
+                            $("#rev_title").val(result.rev_title);
+                            $("#rev_content").val(result.rev_content);
+                            $("#rev_code").val(result.rev_code);  // <input type="hidden">
+        
+                            //$("#btn_review_save").html("상품후기수정");
+        
+                            let rev_rate = result.rev_rate;
+                            
+                            $("p#star_rev_rate a.rev_rate").each(function(index, item) {
+                                
+                                if(index < rev_rate) {
+                                    $(this).addClass("on");
+                                }
+                            });
+        
+                            // modal 보여주기
+                            $("#btn_review_save").hide();
+                            $("#btn_review_modify").show();
+                            $("#review_modal").modal('show');
+        
+                        }
+        
+                    });
+                });
+
+                $("button#btn_review_modify").on("click", function() {
+
+                    let pro_num = $(this).data("pro_num");
+                    //console.log(pro_num);
+                    let rev_code = $("#rev_code").val();
+                    let rev_title = $("#rev_title").val();
+                    let rev_content = $("#rev_content").val();
+                    let rev_rate = 0;
+        
+
+                    $("p#star_rev_rate a.rev_rate").each(function() {
+                        if($(this).attr("class") == "rev_rate on") {
+                            rev_rate += 1;
+                        }
+                    });
+        
+                    if(rev_title == "") {
+                        alert("제목을 입력하세요");
+                        return;
+                    }
+        
+                    if(rev_content == "") {
+                        alert("내용을 입력하세요");
+                        return;
+                    }
+        
+                    if(rev_rate == 0) {
+                        alert("별평점을 선택하세요");
+                        return;
+                    }
+        
+                    // 자바스크립트 object문법사용
+                    let review_data = {pro_num : pro_num, rev_title: rev_title, rev_content : rev_content, rev_rate : rev_rate, rev_code : rev_code};
+        
+                    $.ajax({
+                        url : '/review/review_modify',
+                        // 브라우저는 요청방식이 get, post만 지원을 한다.
+                        // rest api개발에서는 get, post, delete, put, patch 요청방식을 지원하므로, 
+                        // 스프링 컨트롤러에서 rest api로 매핑주소가 설정되어 있으면,
+                        // 아래와 같이 "X-HTTP-Method-Override" : "요청방식" 으로 코드를 구성해줘야, 정상적으로 스프링주소를 호출이 가능해진다.
+                        headers: {
+                            "Content-Type" : "application/json", "X-HTTP-Method-Override" : "PUT"
+                        },
+                        type: 'put',
+                        data : JSON.stringify(review_data),  // 자바스크립트 object문법을 json으로 변환하는 작업
+                        datatype : 'text',
+                        success : function(result) {
+                            if(result == "success") {
+                                alert("상품후기가 수정됨");
+                                $("#review_modal").modal('hide');
+                                getReviewList(url); // 상품후기목록가페이징정보를 갱신.
+                            }
+                        }
+                    });
+        
+        
+                });
+
                 $("div#review_list").on("click", "button[name='btn_review_delete']", function() {
                     if(!confirm("상품후기를 삭제하시겠습니까?")) return;
                     
@@ -376,6 +478,16 @@
                             }
                         }
                     });
+                });
+
+                $("button#btn_direct_order").on("click", function() {
+                    console.log("바로구매");
+        
+                    let pro_num = $(this).data("pro_num");
+                    let cart_amount = $("#btn_cart_amount").val();
+                    let url = `/order/orderinfo?pro_num=${pro_num}&cart_amount=${cart_amount}`;
+        
+                    location.href = url;
                 });
                 
             });

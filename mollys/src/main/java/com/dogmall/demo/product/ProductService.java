@@ -29,4 +29,5 @@ public class ProductService {
 	public AdminProductVO pro_info(int pro_num) {
 		return productMapper.pro_info(pro_num);
 	}
+	
 }

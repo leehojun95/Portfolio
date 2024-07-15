@@ -33,4 +33,11 @@ public class ReviewService {
 		reviewMapper.revie_delete(rev_code);
 	}
 
+	public ReviewVO review_modify(Long rev_code) {
+		return reviewMapper.review_modify(rev_code);
+	}
+	
+	public void review_update(ReviewVO vo) {
+		reviewMapper.review_update(vo);
+	}
 }
