@@ -2,14 +2,18 @@ package com.dogmall.demo.Order;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.dogmall.demo.cart.CartProductVO;
 import com.dogmall.demo.cart.CartService;
 import com.dogmall.demo.cart.CartVO;
+import com.dogmall.demo.member.MemberService;
 import com.dogmall.demo.member.MemberVO;
 
 import jakarta.servlet.http.HttpSession;
@@ -24,14 +28,17 @@ public class OrderController {
 	
 	private final OrderService orderService;
 	private final CartService cartService;
+	private final MemberService memberService;
 	
 	@GetMapping("/orderinfo")
-	public String orderinfo (CartVO vo, Model model, HttpSession session) throws Exception {
+	public String orderinfo (@RequestParam(value = "type", defaultValue = "direct") String type, CartVO vo, Model model, HttpSession session) throws Exception {
 		
 		String mbl_id = ((MemberVO) session.getAttribute("login_status")).getMbl_id();
 		vo.setMbl_id(mbl_id);
 		
+		if(!type.equals("cartorder")){
 		cartService.cart_add(vo);
+		}
 		
 		List<CartProductVO> cart_list = cartService.cart_list(mbl_id);
 		int total_price = 0;
@@ -48,6 +55,17 @@ public class OrderController {
 		model.addAttribute("total_price", total_price);
 		
 		return "/order/orderinfo";
+	}
+	
+	@GetMapping("/sameorder")
+	public ResponseEntity<MemberVO> sameorder(HttpSession session) throws Exception{
+		ResponseEntity<MemberVO> entity = null;
+		
+		String mbl_id = ((MemberVO) session.getAttribute("login_status")).getMbl_id();
+		
+		entity = new ResponseEntity<MemberVO>(memberService.login(mbl_id), HttpStatus.OK);
+		
+		return entity;
 	}
 
 }

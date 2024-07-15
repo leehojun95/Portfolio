@@ -69,7 +69,7 @@
             <div class="card-body">
                  
                  <div class="form-group form-check">
-				    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+				    <input type="checkbox" class="form-check-input" id="sameorder">
 				    <label class="form-check-label" for="exampleCheck1">주문자와 동일</label>
 				 </div>               
                 <div class="form-group row">
@@ -272,6 +272,31 @@
         $("#nobank_info").hide();
       }
     });
+    
+    $("input#sameorder").on("click",function(){
+        if($("input#ordersame").is(":checked")) {
+          
+          $.ajax({
+            url: '/order/sameorder',
+            type: 'get',
+            dataType: 'json',
+            success: function(result) {
+              $("input#ord_name").val(result.mbsp_name);
+              $("input#ord_tel").val(result.mbsp_phone);
+              $("input#samole2_postcode").val(result.mbsp_zipcode);
+              $("input#samole2_address").val(result.mbsp_addr);
+              $("input#ord_detailAddress").val(result.mbsp_deaddr);
+            }
+          });
+
+        }else {
+          $("input#ord_name").val("");
+          $("input#ord_tel").val("");
+          $("input#samole2_postcode").val("");
+          $("input#samole2_address").val("");
+          $("input#ord_detailAddress").val("");
+        }
+      });
 
    
 

@@ -487,7 +487,9 @@
                     let cart_amount = $("#btn_cart_amount").val();
                     let url = `/order/orderinfo?pro_num=${pro_num}&cart_amount=${cart_amount}`;
         
-                    location.href = url;
+                    if(confirm("주문페이지로 이동하시겠습니까?")) {
+                        location.href = url;
+                    }
                 });
                 
             });
