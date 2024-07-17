@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dogmall.demo.QnA.QnAVO">
+
+	<select id="qna_list" parameterType="map" resultType="com.dogmall.demo.QnA.QnAVO">
+	
+		SELECT 
+			qna_code, mbl_id, pro_num, qna_title, qna_content, qna_date, admin_id, ans_content, ans_check, ans_date
+		FROM (
+		    	SELECT /*+ INDEX_DESC(review_tbl pk_review_code)  */ 
+		        	ROWNUM AS RN, qna_code, mbl_id, pro_num, qna_title, qna_content, qna_date, admin_id, ans_content, ans_check, ans_date
+		        FROM
+		        	qna_tbl
+		    	WHERE
+		    		pro_num = #{pro_num}
+		    	AND
+  				 
+		 <![CDATA[  		
+		   		ROWNUM <= (#{cri.pageNum} * #{cri.amount})   -- 페이지번호 * 페이지별 출력건수
+		 ]]>  		
+		)
+		WHERE 
+			RN > (#{cri.pageNum} - 1 ) * #{cri.amount}
+	
+	</select>
+	
+	<select id="getCountQnaByPro_num" parameterType="int" resultType="int">
+	
+		SELECT
+			COUNT(*)
+		FROM
+			qna_tbl
+		WHERE
+			pro_num = #{pro_num}
+	
+	</select>
+	
+	<insert id="qna_save" parameterType="com.dogmall.demo.QnA.QnAVO">
+	
+		INSERT INTO
+			qna_tbl(qna_code, mbl_id, pro_num, qna_title, qna_content)
+		VALUES
+			(seq_review_code.nextval, #{mbl_id}, #{pro_num}, #{rev_title}, #{rev_content},)
+	
+	</insert>
+
+</mapper>

@@ -82,26 +82,26 @@
                         <input type="text" class="form-control" id="ord_tel" name="ord_tel" placeholder="연락처를 입력하세요">
                     </div>
                 </div>
-                                
+
                 <div class="form-group row">
-                    <label for="sample2_postcode" class="col-sm-2 col-form-label">우편번호</label>
+                    <label for="ord_zip_code" class="col-sm-2 col-form-label">우편번호</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="sample2_postcode" name="ord_addr_zipcode" placeholder="우편번호 입력하세요.">
+                        <input type="text" class="form-control" id="ord_zip_code" name="ord_zip_code" placeholder="우편번호 입력하세요.">
                     </div>
                     <div class="col-sm-4">
                         <button type="button" class="btn btn-outline-primary" onclick="sample2_execDaumPostcode()">우편번호</button>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="sample2_address" class="col-sm-2 col-form-label">기본주소</label>
+                    <label for="ord_address" class="col-sm-2 col-form-label">기본주소</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="sample2_address" name="ord_addr_basic" placeholder="기본주소를 입력하세요.">
+                        <input type="text" class="form-control" id="ord_address" name="ord_address" placeholder="기본주소를 입력하세요.">
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="sample2_detailAddress" class="col-sm-2 col-form-label">상세주소</label>
+                    <label for="ord_address_detail" class="col-sm-2 col-form-label">상세주소</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="sample2_detailAddress" name="ord_addr_detail" placeholder="상세주소를 입력하세요.">
+                        <input type="text" class="form-control" id="ord_address_detail" name="ord_address_detail" placeholder="상세주소를 입력하세요.">
                         <input type="hidden" id="sample2_extraAddress" placeholder="참고항목">
                         <input type="hidden" th:value="${total_price}" name="ord_price">
                     </div>
@@ -147,8 +147,8 @@
                                 
             </div>
             
-            <div class="card-footer text-center"> <!--  id="btnJoin"  -->
-            <button type="button" class="btn btn-info" id="btnJoin">주문및결제하기</button>
+            <div class="card-footer text-center">
+            <button type="button" class="btn btn-info" id="btn_order_payment">주문및결제하기</button>
             </div>
             
             </form>
@@ -274,30 +274,44 @@
     });
     
     $("input#sameorder").on("click",function(){
-        if($("input#ordersame").is(":checked")) {
+        if($("input#sameorder").is(":checked")) {
           
           $.ajax({
             url: '/order/sameorder',
             type: 'get',
             dataType: 'json',
             success: function(result) {
-              $("input#ord_name").val(result.mbsp_name);
-              $("input#ord_tel").val(result.mbsp_phone);
-              $("input#samole2_postcode").val(result.mbsp_zipcode);
-              $("input#samole2_address").val(result.mbsp_addr);
-              $("input#ord_detailAddress").val(result.mbsp_deaddr);
+              $("input#ord_name").val(result.mbl_name);
+              $("input#ord_tel").val(result.mbl_phone);
+              $("input#ord_zip_code").val(result.mbl_zip_code);
+              $("input#ord_address").val(result.mbl_addr);
+              $("input#ord_address_detail").val(result.mbl_addr_detail);
             }
           });
 
         }else {
           $("input#ord_name").val("");
           $("input#ord_tel").val("");
-          $("input#samole2_postcode").val("");
-          $("input#samole2_address").val("");
-          $("input#ord_detailAddress").val("");
+          $("input#ord_zip_code").val("");
+          $("input#ord_address").val("");
+          $("input#ord_address_detail").val("");
         }
       });
 
+      $("#btn_order_payment").on("click", function(){
+        $.ajax({
+          url: '/kakao/kakaoPay',
+          type: 'get',
+          data : {ord_name: $("#ord_name").val(), ord_addr_zipcode: $("#ord_zip_code").val(), ord_addr_basic:$("#ord_address").val() , ord_addr_detail:$("#ord_address_detail").val(), ord_tel:$("#ord_tel").val(), ord_price: $("#ord_price").val(), ord_desc:$("#ord_desc").val()},
+          dataType: 'json',
+          success : function(response) {
+            console.log("응답: " + response);
+  
+            alert(response.next_redirect_pc_url);
+            location.href = response.next_redirect_pc_url;	// 결재QR코드로 이동
+          }
+        });
+      });
    
 
 	}); // ready event end

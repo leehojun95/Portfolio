@@ -2,5 +2,35 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dogmall.demo.Order.OrderMapper">
 
+	<insert id="order_insert" parameterType="com.dogmall.demo.Order.OrderVO">
+	
+		<selectKey keyProperty="ord_code" resultType="long" order="BEFORE">
+		
+			SELECT 
+				seq_ord_code.NEXTVAL
+			FROM
+				dual
+		
+		</selectKey>
+	
+			INSERT INTO
+			order_tbl(ord_code, mbl_id, ord_name, ord_addr_zipcode, ord_addr_basic, ord_addr_detail, ord_tel, ord_price, ord_desc)
+		VALUES
+			(#{ord_code}, #{mbl_id}, #{ord_name}, #{ord_addr_zipcode}, #{ord_addr_basic}, #{ord_addr_detail}, #{ord_tel}, #{ord_price}, #{ord_desc})
+	
+	</insert>
+	
+	<insert id="oderDetail_insert" parameterType="map">
+	
+		INSERT INTO
+   			ordetail_tbl(ord_code, pro_num, dt_amount, dt_price) 
+		SELECT
+		    #{ord_code}, pro_num, cart_amount, pro_num * cart_amount
+		FROM 
+		    cart_tbl
+		WHERE
+		    mbl_id  = #{mbl_id}
+	
+	</insert>
 
 </mapper>

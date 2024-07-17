@@ -48,6 +48,51 @@
                 </tbody>
             </table>
         </script>
+
+        <!--Q&A 작성-->
+        <script id="qna-template" type="text/x-handlebars-template">
+            <table id="qnatable" class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">번호</th>
+                        <th scope="col">제목</th>
+                        <th scope="col">내용</th>
+                        <th scope="col">작성자</th>
+                        <th scope="col">등록일</th>
+                        <th scope="col">답변상태</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each .}} 
+                    <tr>
+                        <th scope="row">{{qna_code}}</th>
+                        <td>{{qna_title}}</td>
+                        <td>
+                            <div class="accordion" id="accordionExample">
+                                <div class="card">
+                                  <div class="card-header" id="headingTwo">
+                                    <h2 class="mb-0">
+                                      <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        {{qna_content}}
+                                      </button>
+                                    </h2>
+                                  </div>
+                                  <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                                    <div class="card-body">
+                                     {{ans_content}}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                        </td>
+                        <td>{{secretBlock mbl_id}}</td>
+                        <td>{{convertDate qna_date}}</td>
+                        <td>{{answerStatus admin_id ans_check}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </script>
     </th:block>
   
     <body>
@@ -102,7 +147,11 @@
                                 <div id="review_paging"></div>
                             </div>
                             <div id="pro_qna">
-                                <p>강아지를 위한</p>
+                                <p><button type="button" class="btn btn-link" id="btn_qna_modal">Q&A작성</button></p>
+                                <!-- q&a 출력될 위치 -->
+                                <div id="qna_list"></div>
+                                <!-- 페이징 출력될 위치 -->
+                                <div id="qna_paging"></div>
                             </div>
                         </div>
                     </div>
@@ -479,7 +528,53 @@
                         }
                     });
                 });
+/*
+                let qnaPage = 1;
+                let qnaurl = "/qna/qnalist/" + [[${product.pro_num}]] + "/" + qnaPage;
 
+                getQnaList(qnaurl);
+
+                function getQnaList(qnaurl) {
+                    $.getJSON(qnaurl, function(qnalist) {
+                        print_qnalist(qnalist.qnalist, $("#qna_list"), $("#qna-template"));
+                        print_paging(qnalist.pageMaker, $("#qna_paging"));
+                    });
+                }
+
+                let print_qnalist = function(qnaData, target, template) {
+                    let templateObj = Handlebars.compile(template.html());
+                    let qnaHtml = templateObj(qnaData);
+                    target.children().remove();
+                    target.append(qnaHtml);
+                }
+
+                let print_qnapaging = function(pageData, target) {
+                    let str = `<nav aria-label="Page navigation example">`;
+                        str += `<ul class="pagination">`;
+                    
+                    if(pageData.prev) {
+                        str += `<li class="page-item">`;
+                        str += `<a class="page-link" href="${pageData.startPage - 1}" aria-label="Previous">`;
+                        str += `<span aria-hidden="true">[prev]</span>`;
+                        str += `</a></li>`;
+                    }
+
+                    for(let i=pageData.startPage; i<=pageData.endPage; i++) {
+                        let className = pageData.cri.pageNum == i ? 'active' : '';
+                        str += `<li class="page-item ${className}"><a class="page-link" href="${i}">${i}</a></li>`;
+                    }
+
+                    if(pageData.next) {
+                        str += `<li class="page-item">`;
+                        str += `<a class="page-link" href="${pageData.endPage + 1}" aria-label="Next">`;
+                        str += `<span aria-hidden="true">[next]</span>`;
+                        str += `</a></li>`;
+                    }
+
+                    str += `</ul></nav>`;
+                    target.html(str);
+                }
+*/
                 $("button#btn_direct_order").on("click", function() {
                     console.log("바로구매");
         
