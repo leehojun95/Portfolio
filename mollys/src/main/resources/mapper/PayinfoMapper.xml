@@ -2,13 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dogmall.demo.payinfo.PayinfoMapper">
 
-	<insert id="payinfo_insert" parameterType="com.dogmall.demo.payinfo.PayinfoMapper">
+	<insert id="payinfo_insert" parameterType="com.dogmall.demo.payinfo.PayinfoVO">
 	
 		INSERT INTO
-			payinfo_tbl(pay_id, ord_code, paymethod, pay_price, pay_status)
+			payinfo_tbl(pay_id, ord_code, mbl_id, paymethod, payinfo, pay_price, pay_status)
 		VALUES
-			(seq_pay_id.NEXTVAL, #{ord_code}, #{paymethod}, #{pay_price}, #{pay_status})
+			(seq_payinfo_id.NEXTVAL, #{ord_code}, #{mbl_id}, #{paymethod}, #{payinfo}, #{pay_price}, #{pay_status})
 	
 	</insert>
+	
+	<select id="ord_pay_info" parameterType="long" resultType="com.dogmall.demo.payinfo.PayinfoVO">
+	
+		SELECT
+			pay_id, ord_code, mbl_id, paymethod, payinfo, pay_price, pay_status, pay_date
+		FROM
+			payinfo_tbl
+		WHERE
+			ord_code = #{ord_code}
+	</select>
 
 </mapper>

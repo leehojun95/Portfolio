@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dogmall.demo.qna.QnaMapper">
+
+		<select id="qna_list" parameterType="map" resultType="com.dogmall.demo.qna.QnaVO">
+	
+		SELECT 
+			qna_code, ans_check, mbl_id, pro_num, qna_title, qna_content, qna_date
+		FROM (
+		    	SELECT /*+ INDEX_DESC(qna_tbl pk_qna_code)  */ 
+		        	ROWNUM AS RN, qna_code, ans_check, mbl_id, pro_num, qna_title, qna_content, qna_date
+		        FROM
+		        	qna_tbl
+		    	WHERE
+		    		pro_num = #{pro_num}
+		    	AND
+  				 
+		 <![CDATA[  		
+		   		ROWNUM <= (#{cri.pageNum} * #{cri.amount})   -- 페이지번호 * 페이지별 출력건수
+		 ]]>  		
+		)
+		WHERE 
+			RN > (#{cri.pageNum} - 1 ) * #{cri.amount}
+	
+	</select>
+	
+		<select id="getCountQnaByPro_num" parameterType="int" resultType="int">
+	
+		SELECT
+			COUNT(*)
+		FROM
+			qna_tbl
+		
+		WHERE
+			pro_num = #{pro_num}
+	
+	</select>
+	
+	<insert id="qna_save" parameterType="com.dogmall.demo.qna.QnaVO">
+	
+		INSERT INTO
+			qna_tbl(qna_code, ans_check, mbl_id, pro_num, qna_title, qna_content)
+		VALUES
+			(seq_qna_code.nextval, #{ans_check}, #{mbl_id}, #{pro_num}, #{qna_title}, #{qna_content})
+	
+	</insert>
+	
+	<delete id="qna_delete" parameterType="Long">
+	
+		DELETE FROM
+			qna_tbl
+		WHERE
+			qna_code = #{qna_code}
+	
+	</delete>
+	
+	<select id="qna_modify" parameterType="Long" resultType="com.dogmall.demo.qna.QnaVO">
+	
+		SELECT 
+			qna_code, mbl_id, pro_num, qna_title, qna_content, qna_date
+		FROM
+			qna_tbl
+		WHERE
+			qna_code = #{qna_code}
+	
+	</select>
+	
+	<update id="qna_update" parameterType="com.dogmall.demo.qna.QnaVO">
+	
+		UPDATE
+			qna_tbl
+		SET
+			qna_title = #{qna_title}, qna_content = #{qna_content}, qna_date = SYSDATE
+		WHERE
+			qna_code = #{qna_code}
+	
+	</update>
+	
+</mapper>

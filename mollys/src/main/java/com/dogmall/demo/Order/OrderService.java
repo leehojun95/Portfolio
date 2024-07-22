@@ -20,7 +20,7 @@ public class OrderService {
 	private final PayinfoMapper payinfoMapper;
 	
 	@Transactional
-	public void order_process(OrderVO vo, String mbl_id) {
+	public void order_process(OrderVO vo, String mbl_id , String paymethod, String pay_status, String payinfo) {
 		
 		vo.setMbl_id(mbl_id);
 		orderMapper.order_insert(vo);
@@ -29,9 +29,11 @@ public class OrderService {
 		
 		PayinfoVO p_vo = PayinfoVO.builder()
 				.ord_code(vo.getOrd_code())
-				.pay_id(vo.getOrd_price())
-				.paymethod("kakaopay")
-				.pay_status("완납")
+				.mbl_id(mbl_id)
+				.pay_price(vo.getOrd_price())
+				.paymethod(paymethod)
+				.payinfo(payinfo)
+				.pay_status(pay_status)
 				.build();
 		
 		payinfoMapper.payinfo_insert(p_vo);

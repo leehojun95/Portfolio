@@ -41,7 +41,7 @@
 		INSERT INTO
 			review_tbl(rev_code, mbl_id, pro_num, rev_title, rev_content, rev_rate)
 		VALUES
-			(seq_review_code.nextval, #{mbl_id}, #{pro_num}, #{rev_title}, #{rev_content}, #{rev_rate})
+			(seq_rev_code.nextval, #{mbl_id}, #{pro_num}, #{rev_title}, #{rev_content}, #{rev_rate})
 	
 	</insert>
 	

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dogmall.demo.admin.Qna.AdminQnaMapper">
+
+	<sql id="criteria">
+		<trim prefix="(" suffix=") AND" prefixOverrides="OR">
+			<foreach collection="typeArr" item="type">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'N'.toString()">
+							ord_name like '%' || #{keyword} || '%'
+						</when>
+						<when test="type == 'C'.toString()">
+							ord_code like '%' || #{keyword} || '%'
+						</when>
+						<when test="type == 'I'.toString()">
+							mbsp_id like '%' || #{keyword} || '%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+	
+	<select id="qna_list" resultType="com.dogmall.demo.qna.QnaVO" parameterType="com.dogmall.demo.DTO.Criteria">
+	
+		SELECT 
+			qna_code, mbl_id, pro_num, qna_title, qna_content, qna_date, ans_content, ans_check, ans_date, admin_id
+		FROM (
+		    	SELECT /*+ INDEX_DESC(qna_tbl pk_qna_code)  */ 
+		        	ROWNUM AS RN, qna_code, mbl_id, pro_num, qna_title, qna_content, qna_date, ans_content, ans_check, ans_date, admin_id
+		    	FROM
+		        	qna_tbl
+		    	WHERE 
+  		
+		   <include refid="criteria"></include>
+		 
+		 <![CDATA[  		
+		   		ROWNUM <= (#{pageNum} * #{amount})   -- 페이지번호 * 페이지별 출력건수
+		 ]]>  		
+		)
+		WHERE 
+			RN > (#{pageNum} - 1 ) * #{amount}
+	
+	</select>
+	
+		<select id="getTotalCount" resultType="int">
+	
+		SELECT
+			COUNT(*)
+		FROM
+			qna_tbl
+		
+		WHERE
+			<include refid="criteria"></include>
+			qna_code > 0
+	</select>
+	
+		<select id="qna_info" parameterType="Long" resultType="com.dogmall.demo.qna.QnaVO">
+	
+		SELECT 
+			qna_code, mbl_id, pro_num, qna_title, qna_content, qna_date, ans_content, ans_check, ans_date, admin_id
+			qna_tbl
+		WHERE
+			qna_code = #{qna_code}
+	</select>
+
+</mapper>
