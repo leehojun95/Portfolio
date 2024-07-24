@@ -5,10 +5,10 @@
 		<select id="qna_list" parameterType="map" resultType="com.dogmall.demo.qna.QnaVO">
 	
 		SELECT 
-			qna_code, ans_check, mbl_id, pro_num, qna_title, qna_content, qna_date
+			qna_code, ans_check, mbl_id, pro_num, qna_title, qna_content, qna_date, ans_content
 		FROM (
 		    	SELECT /*+ INDEX_DESC(qna_tbl pk_qna_code)  */ 
-		        	ROWNUM AS RN, qna_code, ans_check, mbl_id, pro_num, qna_title, qna_content, qna_date
+		        	ROWNUM AS RN, qna_code, ans_check, mbl_id, pro_num, qna_title, qna_content, qna_date, ans_content
 		        FROM
 		        	qna_tbl
 		    	WHERE

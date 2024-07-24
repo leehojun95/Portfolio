@@ -10,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.dogmall.demo.admin.category.AdminCategoryService;
+import com.dogmall.demo.admin.category.AdminCategoryVO;
 import com.dogmall.demo.member.MemberVO;
 import com.dogmall.demo.util.FileManagerUtils;
 
@@ -24,6 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 public class CartController {
 	
 	private final CartService cartService;
+	
+	private final AdminCategoryService adminCategoryService;
 	
 	@Value("${file.product.image.dir}")
 	private String uploadPath;
@@ -50,6 +54,9 @@ public class CartController {
 		
 		List<CartProductVO> cart_list = cartService.cart_list(mbl_id);
 		cart_list.forEach(vo -> vo.setPro_up_folder(vo.getPro_up_folder().replace("\\", "/")));
+		
+	    List<AdminCategoryVO> cate_list = adminCategoryService.getFirstCategoryList();
+	    model.addAttribute("user_cate_list", cate_list);
 		
 		model.addAttribute("cart_list", cart_list);
 	}

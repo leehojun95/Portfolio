@@ -39,8 +39,8 @@
 </table>
 <hr>
 <h5>[결제정보]</h5>
-<table class="table">
-  <thead class="thead-dark">
+<table>
+  <thead>
     <tr>
       <th scope="col">결제방식</th>
       <td scope="col">무통장</td>
@@ -65,8 +65,8 @@
 </table>
 <hr>
 <h5>[주문자(수령인)정보]</h5>
-<table class="table">
-  <thead class="thead-dark">
+<table>
+  <thead>
     <tr>
       <th scope="col">수령인</th>
       <td scope="col">
@@ -100,7 +100,7 @@
 </table>
 <hr>
 <h3>관리자메모</h3>
-<textarea rows="3" cols="85">관리내용</textarea>
+<textarea rows="3" cols="85" th:text="${ord_basic.ord_admin_memo}">관리내용</textarea>
   
 </body>
 </html>

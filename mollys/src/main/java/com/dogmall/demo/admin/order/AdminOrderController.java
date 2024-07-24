@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.dogmall.demo.DTO.Criteria;
@@ -36,12 +38,12 @@ public class AdminOrderController {
 	private String uploadPath;
 	
 	@GetMapping("/order_list")
-	public void order_list(Criteria cri, Model model) throws Exception {
+	public void order_list(Criteria cri, @ModelAttribute("start_date") String start_date, @ModelAttribute("end_date") String end_date, Model model) throws Exception {
 		
 		cri.setAmount(5);
-		List<OrderVO> order_list = adminOrderService.order_list(cri);
+		List<OrderVO> order_list = adminOrderService.order_list(cri, start_date, end_date);
 		
-		int totalCount = adminOrderService.getTotalCount(cri);
+		int totalCount = adminOrderService.getTotalCount(cri, start_date, end_date);
 		
 		model.addAttribute("order_list",order_list);
 		model.addAttribute("pageMaker", new PageDTO(cri, totalCount));
@@ -77,5 +79,31 @@ public class AdminOrderController {
 	public ResponseEntity<byte[]> image_display(String dateFolderName, String fileName) throws Exception{
 		
 		return FileManagerUtils.getFile(uploadPath + dateFolderName, fileName);
+	}
+	
+	@GetMapping("/order_product_delete")
+	public ResponseEntity<String> order_product_delete(Long ord_code, int pro_num)throws Exception{
+		
+		ResponseEntity<String> entity = null;
+		
+		adminOrderService.order_product_delete(ord_code, pro_num);
+		
+		entity = new ResponseEntity<String>("success", HttpStatus.OK);
+		
+		return entity;
+	}
+	
+	@PostMapping("/order_basic_modify")
+	public ResponseEntity<String> order_basic_modify(OrderVO vo) throws Exception{
+		
+		log.info("주문기본정보: " + vo);
+		
+		ResponseEntity<String> entity = null;
+		
+		adminOrderService.order_basic_modify(vo);
+		
+		entity = new ResponseEntity<String>("success", HttpStatus.OK);
+		
+		return entity;
 	}
 }

@@ -92,18 +92,12 @@
                             {{ans_content}}
                         </div>
                     </td>
-                    <td>
-                        {{admin_id}}
-                    </td>
-                    <td>
-                        {{ans_date}}
-                    </td>
-                    <td>{{qna_authControlView admin_id}}</td>
                 </tr>
                 {{/each}}
             </tbody>
         </table>
     </script>
+    
     
     
     
@@ -285,7 +279,11 @@
                     });
                 });
 
+
+
                 /////////////////////////////////////////////////////////////////////////////////////////
+
+
                 let qnaPage = 1;
                 let qnaurl = "/qna/qnalist/" + [[${ product.pro_num }]] + "/" + qnaPage;
 
@@ -341,6 +339,7 @@
 
                     return `${year}/${month}/${date}`;
                 });
+
 
                 Handlebars.registerHelper("qna_authControlView", function (mbl_id, qna_code) {
 
@@ -521,6 +520,7 @@
                         }
                     });
                 });
+                
                 ////////////////////////////////////////////////////
                 let reviewPage = 1;
                 let url = "/review/revlist/" + [[${ product.pro_num }]] + "/" + reviewPage;

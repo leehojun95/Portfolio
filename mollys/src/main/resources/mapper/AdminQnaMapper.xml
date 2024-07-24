@@ -4,17 +4,17 @@
 
 	<sql id="criteria">
 		<trim prefix="(" suffix=") AND" prefixOverrides="OR">
-			<foreach collection="typeArr" item="type">
+			<foreach collection="cri.typeArr" item="type">
 				<trim prefix="OR">
 					<choose>
 						<when test="type == 'N'.toString()">
-							ord_name like '%' || #{keyword} || '%'
+							qna_code like '%' || #{cri.keyword} || '%'
 						</when>
-						<when test="type == 'C'.toString()">
-							ord_code like '%' || #{keyword} || '%'
+						<when test="type == 'M'.toString()">
+							mbl_id like '%' || #{cri.keyword} || '%'
 						</when>
-						<when test="type == 'I'.toString()">
-							mbsp_id like '%' || #{keyword} || '%'
+						<when test="type == 'T'.toString()">
+							qna_title like '%' || #{cri.keyword} || '%'
 						</when>
 					</choose>
 				</trim>
@@ -22,25 +22,38 @@
 		</trim>
 	</sql>
 	
+		<sql id="period">
+	
+		<if test ="start_date != null and !start_date.equals('') and end_date != null and !end_date.equals('')">
+		
+			<![CDATA[
+				qna_date >= to_date(#{start_date}) AND qna_date < to_date(#{end_date}) +1 AND
+			]]>
+		
+		</if>
+		
+	</sql>
+	
 	<select id="qna_list" resultType="com.dogmall.demo.qna.QnaVO" parameterType="com.dogmall.demo.DTO.Criteria">
 	
 		SELECT 
-			qna_code, mbl_id, pro_num, qna_title, qna_content, qna_date, ans_content, ans_check, ans_date, admin_id
+			qna_code, mbl_id, pro_num, qna_title, qna_content, qna_date, ans_content, ans_check
 		FROM (
 		    	SELECT /*+ INDEX_DESC(qna_tbl pk_qna_code)  */ 
-		        	ROWNUM AS RN, qna_code, mbl_id, pro_num, qna_title, qna_content, qna_date, ans_content, ans_check, ans_date, admin_id
+		        	ROWNUM AS RN, qna_code, mbl_id, pro_num, qna_title, qna_content, qna_date, ans_content, ans_check
 		    	FROM
 		        	qna_tbl
 		    	WHERE 
   		
 		   <include refid="criteria"></include>
+		   <include refid="period"></include>
 		 
 		 <![CDATA[  		
-		   		ROWNUM <= (#{pageNum} * #{amount})   -- 페이지번호 * 페이지별 출력건수
+		   		ROWNUM <= (#{cri.pageNum} * #{cri.amount})   -- 페이지번호 * 페이지별 출력건수
 		 ]]>  		
 		)
 		WHERE 
-			RN > (#{pageNum} - 1 ) * #{amount}
+			RN > (#{cri.pageNum} - 1 ) * #{cri.amount}
 	
 	</select>
 	
@@ -53,16 +66,45 @@
 		
 		WHERE
 			<include refid="criteria"></include>
+			<include refid="period"></include>
 			qna_code > 0
 	</select>
 	
 		<select id="qna_info" parameterType="Long" resultType="com.dogmall.demo.qna.QnaVO">
 	
 		SELECT 
-			qna_code, mbl_id, pro_num, qna_title, qna_content, qna_date, ans_content, ans_check, ans_date, admin_id
+			qna_code, mbl_id, pro_num, qna_title, qna_content, qna_date, ans_content, ans_check
+		FROM
 			qna_tbl
 		WHERE
 			qna_code = #{qna_code}
 	</select>
+	
+	<select id="qna_detail_info" parameterType="Long" resultType="com.dogmall.demo.qna.QnaVO">
+	
+		SELECT 
+			qt.qna_code, qt.mbl_id, qt.pro_num, qt.qna_title, qt.qna_content, qt.qna_date, qt.ans_check, qt.ans_content, p.pro_name, p.pro_up_folder, p.pro_img
+		FROM
+			qna_tbl qt
+		INNER JOIN 
+			product_tbl p
+		ON 
+			qt.pro_num = p.pro_num
+		WHERE
+			qna_code = #{qna_code}
+	
+	</select>
+	
+	<insert id="qna_basic_modify" parameterType="com.dogmall.demo.qna.QnaVO">
+	
+	UPDATE
+		qna_tbl
+	SET
+		ans_check = #{ans_check},
+		ans_content = #{ans_content}
+	WHERE
+		qna_code = #{qna_code}
+		
+	</insert>
 
 </mapper>
