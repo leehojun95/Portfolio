@@ -1,23 +1,26 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{admin/layout/adminlayout}">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{admin/layout/adminlayout}">
+
 <head>
     <meta charset="UTF-8">
     <title>QnA List</title>
     <!-- CSS 및 기타 스타일 시트 로드 -->
 </head>
+
 <body class="hold-transition skin-blue sidebar-mini">
-<div class="wrapper">
-    <!-- Main Header -->
+    <div class="wrapper">
+        <!-- Main Header -->
 
-    <!-- Left side column. contains the logo and sidebar -->
+        <!-- Left side column. contains the logo and sidebar -->
 
-    <th:block layout:fragment="content">
-        <!-- 스타일 및 스크립트 로드 -->
+        <th:block layout:fragment="content">
+            <!-- 스타일 및 스크립트 로드 -->
 
-        <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
 
-        <!-- Handlebars 템플릿 -->
-        <script id="qna-template" type="text/x-handlebars-template">
+            <!-- Handlebars 템플릿 -->
+            <script id="qna-template" type="text/x-handlebars-template">
             <h5>[QnA정보]</h5>
             <table class="table">
                 <thead class="thead-dark">
@@ -51,170 +54,193 @@
                 </tbody>
             </table>
         </script>
-        
-        <script src="/ckeditor/ckeditor.js"></script>
-        <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper">
-            <!-- Main content -->
-            <section class="content">
-                <!-- 검색 폼 -->
-                <div>
-                    <form action="/admin/qna/qna_list" method="get">
-                        <select name="type">
-                            <option selected th:selected="${''} == ${pageMaker.cri.type}">검색종류선택</option>
-                            <option value="N" th:selected="${'N'} == ${pageMaker.cri.type}">번호</option>
-                            <option value="M" th:selected="${'M'} == ${pageMaker.cri.type}">작성자</option>
-                            <option value="T" th:selected="${'T'} == ${pageMaker.cri.type}">제목</option>
-                        </select>
-                        <input type="text" name="keyword" th:value="${pageMaker.cri.keyword}" />
-                        <input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum}" />
-                        <input type="hidden" name="amount" th:value="${pageMaker.cri.amount}" />
-                        <button type="submit" class="btn btn-primary">검색</button>
-                        날짜검색 : 
-                        <input type="date" name="start_date" th:value="${start_date}"/> ~ <input type="date" name="end_date" th:value="${end_date}"/>
-                        <button type="submit" class="btn btn-primary">검색</button>
-                    </form>
-                </div>
 
-                <!-- QnA 목록 테이블 -->
-                <table class="table table-bordered">
-                    <tbody>
-                    <tr>
-                        <th style="width: 8%">번호</th>
-                        <th style="width: 8%">답변상태</th>
-                        <th style="width: 15%">작성자(아이디)</th>
-                        <th style="width: 20%">제목</th>
-                        <th style="width: 10%">등록일</th>
-                        <th style="width: 10%">수정</th>
-                        <th style="width: 10%">삭제</th>
-                        <th style="width: 10%">상세보기</th>
-                    </tr>
-
-                    <!-- QnA 데이터 표시 -->
-                    <tr th:each="qna : ${qna_list}">
-                        <td><span th:text="${qna.qna_code}"></span></td>
-                        <td><span th:text="${qna.ans_check}"></span></td>
-                        <td>[[${qna.mbl_id}]]</td>
-                        <td><span th:text="${qna.qna_title}"></span></td>
-                        <td th:text="${#dates.format(qna.qna_date, 'yyyy-MM-dd') }"></td>
-                        <td><button type="button" class="btn btn-primary" name="btn_qna_edit" th:data-ord_code="${qna.qna_code}">수정</button></td>
-                        <td><button type="button" class="btn btn-danger" name="btn_qna_del" th:data-ord_code="${qna.qna_code}">삭제</button></td>
-                        <td><button type="button" class="btn btn-dark" name="btn_qna_info"  th:data-qna_code="${qna.qna_code}">상세보기</button></td>
-                    </tr>
-                    </tbody>
-                </table>
-
-                <!--  Criteria 클래스 필드사용목적 -->
-														<!--1)페이지번호 클릭할 때 사용  [이전]  1	 2	3	4	5 [다음]  -->
-														<!--2)목록에서 상품이미지 또는 상품명 클릭할 때 사용   -->
-														<form id="actionForm" action="" method="get">
-															<input type="hidden" name="pageNum" id="pageNum"
-																th:value="${pageMaker.cri.pageNum}" />
-															<input type="hidden" name="amount" id="amount"
-																th:value="${pageMaker.cri.amount}" />
-															<input type="hidden" name="type" id="type"
-																th:value="${pageMaker.cri.type}" />
-															<input type="hidden" name="keyword" id="keyword"
-																th:value="${pageMaker.cri.keyword}" />
-
-														</form>
-													</div>
-													<div class="col-md-6 text-center">
-														<nav aria-label="...">
-															<ul class="pagination">
-																<!-- 이전 표시여부 -->
-
-																<th:block th:if="${pageMaker.prev }">
-																	<li class="page-item">
-																		<a th:href="${pageMaker.startPage - 1 }"
-																			class="page-link movepage">Previous</a>
-																	</li>
-																</th:block>
-
-																<!-- https://jbground.tistory.com/40 페이지번호 출력 -->
-																<!-- 1	2	3	4	5 6	7	8	9	10  [다음] -->
-																<!-- [이전] 11	12	13	14	15 16	17	18	19	20   -->
-
-																<th:block th:with="pageMaker = ${pageMaker}">
-																	<th:block
-																		th:each="num : *{#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}">
-																		<li class='page-item'
-																			th:classappend="${pageMaker.cri.pageNum ==  num ? 'active': '' }"
-																			aria-current="page">
-																			<a class="page-link movepage"
-																				th:href="${num }" th:text="${num }"></a>
-																		</li>
-																	</th:block>
-																</th:block>
-
-																<!--  다음 표시여부 -->
-																<th:block th:if="${pageMaker.next }">
-																	<li class="page-item">
-																		<a th:href="${pageMaker.endPage + 1 }"
-																			class="page-link movepage">Next</a>
-																	</li>
-																</th:block>
-                    </ul>
-                </nav>
-            </section><!-- /.content -->
-        </div><!-- /.content-wrapper -->
-
-        <!-- Modal -->
-        <div class="modal fade" id="qna_detail_info_popup" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel2">QnA 상세 정보</h5>
-                        <button type="button" id="btn_close" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body" id="popup_info">
-
-                        <div id="qna_user_info">
-                            <!-- 여기에 상세 정보 표시 -->
-                            
+            <script src="/ckeditor/ckeditor.js"></script>
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper">
+                <!-- Main content -->
+                <section class="content">
+                    <!-- Your Page Content Here -->
+                    <div class="row">
+                        <div class="col">
+                            <div class="box box-info">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Qna목록</h3>
+                                </div><!-- /.box-header -->
+                                <!-- list start -->
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="box">
+                                            <div class="box-header with-border">
+                                                <h3 class="box-title">Qna List</h3>
+                                            </div>
+                                            <!-- 검색 폼 -->
+                                            <div>
+                                                <form action="/admin/qna/qna_list" method="get">
+                                                    <select name="type">
+                                                        <option selected th:selected="${''} == ${pageMaker.cri.type}">
+                                                            검색종류선택</option>
+                                                        <option value="N" th:selected="${'N'} == ${pageMaker.cri.type}">
+                                                            번호</option>
+                                                        <option value="M" th:selected="${'M'} == ${pageMaker.cri.type}">
+                                                            작성자</option>
+                                                        <option value="T" th:selected="${'T'} == ${pageMaker.cri.type}">
+                                                            제목</option>
+                                                    </select>
+                                                    <input type="text" name="keyword" th:value="${pageMaker.cri.keyword}" />
+                                                    <input type="hidden" name="pageNum" th:value="${pageMaker.cri.pageNum}" />
+                                                    <input type="hidden" name="amount" th:value="${pageMaker.cri.amount}" />
+                                                    <button type="submit" class="btn btn-primary">검색</button>
+                                                    날짜검색 :
+                                                    <input type="date" name="start_date" th:value="${start_date}" /> ~
+                                                    <input type="date" name="end_date" th:value="${end_date}" />
+                                                    <button type="submit" class="btn btn-primary">검색</button>
+                                                </form>
+                                            </div>
+                
+                                            <!-- QnA 목록 테이블 -->
+                                            <table class="table table-bordered">
+                                                <tbody>
+                                                    <tr>
+                                                        <th style="width: 8%">번호</th>
+                                                        <th style="width: 8%">답변상태</th>
+                                                        <th style="width: 15%">작성자(아이디)</th>
+                                                        <th style="width: 20%">제목</th>
+                                                        <th style="width: 10%">등록일</th>
+                                                        <th style="width: 10%">삭제</th>
+                                                        <th style="width: 10%">답변하기</th>
+                                                    </tr>
+                
+                                                    <!-- QnA 데이터 표시 -->
+                                                    <tr th:each="qna : ${qna_list}">
+                                                        <td><span th:text="${qna.qna_code}"></span></td>
+                                                        <td><span th:text="${qna.ans_check}"></span></td>
+                                                        <td>[[${qna.mbl_id}]]</td>
+                                                        <td><span th:text="${qna.qna_title}"></span></td>
+                                                        <td th:text="${#dates.format(qna.qna_date, 'yyyy-MM-dd') }">
+                                                        </td>
+                                                        <td><button type="button" class="btn btn-danger" name="btn_qna_del"
+                                                                th:data-ord_code="${qna.qna_code}">삭제</button></td>
+                                                        <td><button type="button" class="btn btn-primary" name="btn_qna_info"
+                                                                th:data-qna_code="${qna.qna_code}">답변하기</button></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                
+                                            <!--  Criteria 클래스 필드사용목적 -->
+                                            <!--1)페이지번호 클릭할 때 사용  [이전]  1	 2	3	4	5 [다음]  -->
+                                            <!--2)목록에서 상품이미지 또는 상품명 클릭할 때 사용   -->
+                                            <form id="actionForm" action="" method="get">
+                                                <input type="hidden" name="pageNum" id="pageNum" th:value="${pageMaker.cri.pageNum}" />
+                                                <input type="hidden" name="amount" id="amount" th:value="${pageMaker.cri.amount}" />
+                                                <input type="hidden" name="type" id="type" th:value="${pageMaker.cri.type}" />
+                                                <input type="hidden" name="keyword" id="keyword" th:value="${pageMaker.cri.keyword}" />
+                
+                                            </form>
+                                        </div>
+                                        <div class="col-md-6 text-center">
+                                            <nav aria-label="...">
+                                                <ul class="pagination">
+                                                    <!-- 이전 표시여부 -->
+                
+                                                    <th:block th:if="${pageMaker.prev }">
+                                                        <li class="page-item">
+                                                            <a th:href="${pageMaker.startPage - 1 }"
+                                                                class="page-link movepage">Previous</a>
+                                                        </li>
+                                                    </th:block>
+                
+                                                    <!-- https://jbground.tistory.com/40 페이지번호 출력 -->
+                                                    <!-- 1	2	3	4	5 6	7	8	9	10  [다음] -->
+                                                    <!-- [이전] 11	12	13	14	15 16	17	18	19	20   -->
+                
+                                                    <th:block th:with="pageMaker = ${pageMaker}">
+                                                        <th:block
+                                                            th:each="num : *{#numbers.sequence(pageMaker.startPage, pageMaker.endPage)}">
+                                                            <li class='page-item'
+                                                                th:classappend="${pageMaker.cri.pageNum ==  num ? 'active': '' }"
+                                                                aria-current="page">
+                                                                <a class="page-link movepage" th:href="${num }" th:text="${num }"></a>
+                                                            </li>
+                                                        </th:block>
+                                                    </th:block>
+                
+                                                    <!--  다음 표시여부 -->
+                                                    <th:block th:if="${pageMaker.next }">
+                                                        <li class="page-item">
+                                                            <a th:href="${pageMaker.endPage + 1 }" class="page-link movepage">Next</a>
+                                                        </li>
+                                                    </th:block>
+                                                </ul>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <h5>[답변]</h5>
-                        <table class="table">
-                            <thead>
-                              <tr>
-                                <th scope="row" >답변상태</th>
-                                <td scope="col">
-                                  <select id="ans_check" class="form-select form-select-sm" aria-label=".form-select-sm example">
-                                    <option selected value="답변보류">----답변상태----</option>
-                                    <option value="답변보류">답변보류</option>
-                                    <option value="답변완료">답변완료</option>
-                                  </select>
-                                </td>
-                            </tr>
-                            <tr>
-                              <th scope="row">답변하기</th>
-                              <td colspan="3">
-                                <textarea rows="3" cols="70" id="ans_content">답변하기...</textarea>
-                              </td>
-                            </tr>
-                            </thead>
-                        </table>
-                        <div>
-                          <button type="button" id="btn_qna_basic_save" class="btn btn-dark float-right">수정하기</button>
-          
+                    </div>
+                </section><!-- /.content -->
+            </div><!-- /.content-wrapper -->
+
+            <!-- Modal -->
+            <div class="modal fade" id="qna_detail_info_popup" data-backdrop="static" data-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel2">QnA 상세 정보</h5>
+                            <button type="button" id="btn_close" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="popup_info">
+
+                            <div id="qna_user_info">
+                                <!-- 여기에 상세 정보 표시 -->
+
+                            </div>
+                            <h5>[답변]</h5>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="row">답변상태</th>
+                                        <td scope="col">
+                                            <select id="ans_check" class="form-select form-select-sm"
+                                                aria-label=".form-select-sm example">
+                                                <option selected value="답변보류">----답변상태----</option>
+                                                <option value="답변보류">답변보류</option>
+                                                <option value="답변완료">답변완료</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">답변하기</th>
+                                        <td colspan="3">
+                                            <textarea rows="3" cols="70" id="ans_content">답변하기...</textarea>
+                                        </td>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <div>
+                                <button type="button" id="btn_qna_basic_save"
+                                    class="btn btn-dark float-right">수정하기</button>
+
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
     </th:block>
 
     <th:block layout:fragment="script">
         <script>
-            $(document).ready(function() {
+            $(document).ready(function () {
 
 
                 let actionForm = $("#actionForm");
 
                 // 페이지번호 클릭시(이전  1  2	 3	4	5  다음) actionForm 을 사용한다.
-                $(".movepage").on("click", function(e) {
+                $(".movepage").on("click", function (e) {
                     e.preventDefault();
                     actionForm.attr("action", "/admin/qna/qna_list");
                     actionForm.find("input[name='pageNum']").val($(this).attr("href"));
@@ -224,21 +250,21 @@
                 let qna_code;
 
                 // QnA 상세보기 버튼 클릭 시
-                $("button[name='btn_qna_info']").on("click", function(){
+                $("button[name='btn_qna_info']").on("click", function () {
                     qna_code = $(this).data("qna_code");
 
                     qna_detail_info();
                 });
 
-                    function qna_detail_info(){
-                     // 모달 창 표시
+                function qna_detail_info() {
+                    // 모달 창 표시
                     $("#qna_detail_info_popup").modal('show');
                     $.ajax({
                         url: '/admin/qna/qna_detail_info',
                         type: 'get',
-                        data: {qna_code : qna_code},
+                        data: { qna_code: qna_code },
                         dataType: 'json',
-                        success : function(result) {
+                        success: function (result) {
                             print_qna_user_info(result.qna_list, $("#qna_user_info"), $("#qna-template"));
 
                             $("#ans_content").val(result.qna_basic.ans_content);
@@ -248,57 +274,58 @@
 
                         }
                     });
-                
-            }
-            
 
-// 수정하기 버튼 클릭 시
-$("#btn_qna_basic_save").on("click", function () {
-    let qna_basic_data = {
-        qna_code: qna_code,
-        ans_content: $("#ans_content").val(),
-        ans_check: $("#ans_check").val()
-    };
-
-    // AJAX를 통해 서버에 데이터 전송
-    $.ajax({
-        url: '/admin/qna/qna_basic_modify',
-        type: 'post',
-        data: qna_basic_data,
-        dataType: 'text',
-        success: function (result) {
-            if (result == "success") {
-                alert("답변이 수정되었습니다.");
-            }
-        }
-    });
-});
+                }
 
 
-                  
+                // 수정하기 버튼 클릭 시
+                $("#btn_qna_basic_save").on("click", function () {
+                    let qna_basic_data = {
+                        qna_code: qna_code,
+                        ans_content: $("#ans_content").val(),
+                        ans_check: $("#ans_check").val()
+                    };
+
+                    // AJAX를 통해 서버에 데이터 전송
+                    $.ajax({
+                        url: '/admin/qna/qna_basic_modify',
+                        type: 'post',
+                        data: qna_basic_data,
+                        dataType: 'text',
+                        success: function (result) {
+                            if (result == "success") {
+                                alert("답변이 수정되었습니다.");
+                            }
+                        }
+                    });
+                });
 
 
 
-              // Handlebars 템플릿으로 데이터 출력
-              let print_qna_user_info = function (qna_u_data, target, template) {
-                let templateObj = Handlebars.compile(template.html());
-                let admin_qna_html = templateObj(qna_u_data);
-                target.html(admin_qna_html);
-              };
 
-              Handlebars.registerHelper("qna_convertDate", function (qna_date) {
-                const d = new Date(qna_date);
-                let year = d.getFullYear();
-                let month = d.getMonth() + 1;
-                let date = d.getDate();
 
-                return `${year}/${month}/${date}`;
-            });
-            
+
+                // Handlebars 템플릿으로 데이터 출력
+                let print_qna_user_info = function (qna_u_data, target, template) {
+                    let templateObj = Handlebars.compile(template.html());
+                    let admin_qna_html = templateObj(qna_u_data);
+                    target.html(admin_qna_html);
+                };
+
+                Handlebars.registerHelper("qna_convertDate", function (qna_date) {
+                    const d = new Date(qna_date);
+                    let year = d.getFullYear();
+                    let month = d.getMonth() + 1;
+                    let date = d.getDate();
+
+                    return `${year}/${month}/${date}`;
+                });
+
 
             });
         </script>
     </th:block>
-</div>
+    </div>
 </body>
+
 </html>

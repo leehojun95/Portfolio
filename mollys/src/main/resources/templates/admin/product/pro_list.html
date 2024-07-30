@@ -72,13 +72,13 @@
 															<td>[[${product.pro_num}]]</td>
 															<td>
 																<!-- /admin/product/imageDisplaydateFolderName=값1&?fileName=값2  -->
-																<a class="move" href="#">
+																<a class="move" th:href="@{/product/pro_detail(pro_num = ${product.pro_num})}">
 																	<!-- /*/    /*/-->
 																	<img
 																		th:src="${'/admin/product/image_display?dateFolderName=' + product.pro_up_folder + '&fileName=s_' + product.pro_img}">
 																</a>
 
-																<a class="move pro_name" href="#"
+																<a class="move pro_name" th:href="@{/product/pro_detail(pro_num = ${product.pro_num})}"
 																	th:text="${product.pro_name}"></a>
 															</td>
 															<td><input type="text" name="pro_price"
@@ -268,7 +268,7 @@
 
 						let pro_num = $(this).data("pro_num");
 
-						actionForm.find("input[name='pro.num']").remove();
+						actionForm.find("input[name='pro_num']").remove();
 
 						let str = `<input type="hidden" name="pro_num" id="pro_num" value="${pro_num}" />`;
 						console.log(str);

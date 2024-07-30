@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dogmall.demo.admin.MBMG.MBMGMapper">
+
+	<sql id="criteria">
+		<trim prefix="(" suffix=") AND" prefixOverrides="OR">
+			<foreach collection="cri.typeArr" item="type">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'I'.toString()">
+							mbl_id like '%' || #{cri.keyword} || '%' OR mbl_name like '%' || #{cri.keyword} || '%'
+						</when>
+						<when test="type == 'E'.toString()">
+							mbl_email like '%' || #{cri.keyword} || '%'
+						</when>
+						<when test="type == 'N'.toString()">
+							mbl_phone like '%' || #{cri.keyword} || '%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+	
+	<sql id="period">
+	
+		<if test ="start_date != null and !start_date.equals('') and end_date != null and !end_date.equals('')">
+		
+			<![CDATA[
+				mbl_regdate >= to_date(#{start_date}) AND mbl_regdate < to_date(#{end_date}) +1 AND
+			]]>
+		
+		</if>
+		
+	</sql>
+	
+	<sql id="mailsearch">
+		<if test="m_title != null and !m_title.equals('')">AND m_title like  '%' || #{m_title} || '%'</if>	
+	</sql>
+	
+	<select id="mbmg_list" resultType="com.dogmall.demo.member.MemberVO" parameterType="com.dogmall.demo.DTO.Criteria">
+	
+		
+		SELECT 
+			mbl_id, mbl_name, mbl_email, mbl_phone, mbl_regdate
+		FROM (
+		    	SELECT /*+ INDEX_DESC(mbl_tbl pk_mbl_id)  */ 
+		        	ROWNUM AS RN, mbl_id, mbl_name, mbl_email, mbl_phone, mbl_regdate
+		    	FROM
+		        	mbl_tbl
+		    	WHERE 
+  		
+		   <include refid="criteria"></include>
+		   <include refid="period"></include>
+		 
+		 <![CDATA[  		
+		   		ROWNUM <= (#{cri.pageNum} * #{cri.amount})   -- 페이지번호 * 페이지별 출력건수
+		 ]]>  		
+		)
+		WHERE 
+			RN > (#{cri.pageNum} - 1 ) * #{cri.amount}
+	
+	</select>
+	
+	<select id="getTotalCount" resultType="int">
+	
+		SELECT
+			COUNT(*)
+		FROM
+			mbl_tbl
+		
+		WHERE
+			<include refid="criteria"></include>
+			<include refid="period"></include>
+			mbl_point >= 0
+			
+	</select>
+	
+	<select id="mbmg_edit" resultType="com.dogmall.demo.member.MemberVO" parameterType="String">
+	    SELECT
+	        mbl_id, mbl_password, mbl_email, mbl_name, mbl_brith, mbl_zip_code,
+	        mbl_addr, mbl_addr_detail, mbl_phone, mbl_gender, mbl_point,
+	        mbl_regdate, mbl_updatedate
+	    FROM
+	        mbl_tbl
+	    WHERE
+	        mbl_id = #{mbl_id}
+	</select>
+
+	
+	<update id="mbmg_edit_ok" parameterType="com.dogmall.demo.member.MemberVO">
+	    UPDATE
+	        mbl_tbl
+	    SET
+	        mbl_email = #{mbl_email},
+	        mbl_name = #{mbl_name},
+	        mbl_brith = #{mbl_brith},
+	        mbl_zip_code = #{mbl_zip_code},
+	        mbl_addr = #{mbl_addr},
+	        mbl_addr_detail = #{mbl_addr_detail},
+	        mbl_phone = #{mbl_phone},
+	        mbl_gender = #{mbl_gender},
+	        mbl_point = #{mbl_point}
+	    WHERE
+	        mbl_id = #{mbl_id}
+	</update>
+
+	<select id="mbmg_delete" parameterType="String">
+	
+			DELETE FROM
+				mbl_tbl
+			WHERE
+				mbl_id = #{mbl_id}
+	
+	</select>
+
+</mapper>

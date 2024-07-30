@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dogmall.demo.admin.MBmail.MBmailMapper">
+
+
+	<sql id="mailsearch">
+		<if test="m_title != null and !m_title.equals('')">AND m_title like  '%' || #{m_title} || '%'</if>
+	</sql>
+	
+	<select id="getMailInfoList"  resultType="com.dogmall.demo.admin.MBmail.MBmailVO" parameterType="com.dogmall.demo.DTO.Criteria">
+	
+		
+		SELECT 
+			m_num, m_title, m_content, m_check, m_send_count, m_regdate
+		FROM (
+		    	SELECT /*+ INDEX_DESC(mbmg_mail_tbl pk_m_num)  */ 
+		        	ROWNUM AS RN, m_num, m_title, m_content, m_check, m_send_count, m_regdate
+		    	FROM
+		        	mbmg_mail_tbl
+		    	WHERE 
+		    		1 = 1
+  		
+  		<include refid="mailsearch"></include>
+  		
+	 
+		 <![CDATA[  		
+		   		AND ROWNUM <= (#{cri.pageNum} * #{cri.amount})   -- 페이지번호 * 페이지별 출력건수
+		 ]]>  		
+		)
+		WHERE 
+			RN > (#{cri.pageNum} - 1 ) * #{cri.amount}
+		
+	
+	</select>
+	
+	<select id="getMailListCount" parameterType="String" resultType="int">
+	
+		SELECT
+			COUNT(*)
+		FROM
+			mbmg_mail_tbl
+		WHERE
+			1 = 1
+			
+		<include refid="mailsearch"></include>
+	</select>
+	
+	<insert id="mailling_save" parameterType="com.dogmall.demo.admin.MBmail.MBmailVO">
+	
+		<selectKey keyProperty="m_num" resultType="Integer" order="BEFORE">
+		
+			SELECT
+				seq_m_num.NEXTVAL
+			FROM
+				dual
+				
+		</selectKey>
+		
+		INSERT INTO
+			mbmg_mail_tbl(m_num, m_title, m_content, m_check, mbl_email)
+		VALUES
+			(#{m_num}, #{m_title}, #{m_content}, #{m_check}, #{mbl_email})
+			
+	</insert>
+	
+	<select id="getAllMailAddress" resultType="String">
+	
+		SELECT
+			mbl_email
+		FROM
+			mbl_tbl
+	
+	</select>
+	
+		<update id="mailSendCountUpdate" parameterType="int">
+	
+		UPDATE
+			mbmg_mail_tbl
+		SET
+			m_send_count = m_send_count + 1
+		WHERE
+			m_num = #{m_num}
+	
+	</update>
+	
+		<select id="getMailSendInfo" resultType="com.dogmall.demo.admin.MBmail.MBmailVO" parameterType="int">
+	
+		SELECT
+			m_num, m_title, m_content, m_check, m_send_count, m_regdate, mbl_email
+		FROM 
+			mbmg_mail_tbl
+		WHERE
+			m_num = #{m_num}
+	
+	</select>
+	
+		<update id="mailling_edit" parameterType="com.dogmall.demo.admin.MBmail.MBmailVO">
+	
+		UPDATE
+			mbmg_mail_tbl
+		SET
+			m_title = #{m_title}, m_content = #{m_content}, m_check = #{m_check}, m_regdate = sysdate, mbl_email = #{mbl_email}
+		WHERE
+			m_num = #{m_num}	
+	
+	</update>
+	
+		<select id="mailling_delete" parameterType="int">
+	
+		DELETE FROM
+			mbmg_mail_tbl
+		WHERE
+			m_num = #{m_num}
+	
+	</select>
+
+</mapper>

@@ -23,6 +23,7 @@ import com.dogmall.demo.DTO.Criteria;
 import com.dogmall.demo.DTO.PageDTO;
 import com.dogmall.demo.admin.category.AdminCategoryService;
 import com.dogmall.demo.admin.category.AdminCategoryVO;
+import com.dogmall.demo.constants.Constants;
 import com.dogmall.demo.util.FileManagerUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -90,7 +91,8 @@ public class AdminProductController {
 			
 			printWriter = response.getWriter();
 			
-			String fileUrl = "/admin/product/display/" + fileName ;
+			// 한글파일 인코딩 설정문제 발생.
+			String fileUrl = Constants.ROOT_URL + "/admin/product/display/" + fileName ;
 					
 			printWriter.println("{\"filename\" :\"" + fileName + "\", \"uploaded\":1,\"url\":\"" + fileUrl + "\"}"); 
 			printWriter.flush();

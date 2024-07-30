@@ -51,6 +51,7 @@ public class NaverLoginService {
 					.queryParam("client_secret", clientSecret)
 					.queryParam("code", callback.getCode())
 					.queryParam("state", URLEncoder.encode(callback.getState(), "UTF-8"))
+					.queryParam("service_provider", "NAVER")
 					.build();
 			URL url = new URL(uriComponents.toString());
 			
@@ -88,6 +89,32 @@ public class NaverLoginService {
 		return null;
 	}
 	
+	public void getNaverTokenDelete(String access_token) {
+        try {
+            // 네이버 인증 서버의 세션을 무효화하는 API를 호출하는 URL 생성
+            UriComponents uriComponents = UriComponentsBuilder
+                    .fromUriString("https://nid.naver.com/oauth2.0/token")
+                    .queryParam("grant_type", "delete")
+                    .queryParam("client_id", clientId)
+                    .queryParam("client_secret", clientSecret)
+                    .queryParam("access_token", URLEncoder.encode(access_token, "UTF-8"))
+                    .build();
+
+            URL url = new URL(uriComponents.toString());
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            int responseCode = conn.getResponseCode();
+
+            log.info("네이버 로그아웃 상태코드:" + responseCode);
+
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+		} 
+	}
+	
+	
+	
 	public String getnaverUserByToken(NaverToken naverToken) {
 		String accessToken = naverToken.getAccess_token();
 		String tokenType = naverToken.getToken_type()
@@ -123,29 +150,7 @@ public class NaverLoginService {
 		return null;
 }
 	
-    public void getNaverTokenDelete(String access_token) {
-        try {
-            // 네이버 인증 서버의 세션을 무효화하는 API를 호출하는 URL 생성
-            UriComponents uriComponents = UriComponentsBuilder
-                    .fromUriString("https://nid.naver.com/oauth2.0/token")
-                    .queryParam("grant_type", "delete")
-                    .queryParam("client_id", clientId)
-                    .queryParam("client_secret", clientSecret)
-                    .queryParam("access_token", URLEncoder.encode(access_token, "UTF-8"))
-                    .build();
-
-            URL url = new URL(uriComponents.toString());
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            int responseCode = conn.getResponseCode();
-
-            log.info("네이버 로그아웃 상태코드:" + responseCode);
-
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-		} 
-	}
+    
 	
 	
 	

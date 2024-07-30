@@ -39,6 +39,33 @@ public class EmailService{
         }
     }
     
+    public void sendMail(EmailDTO dto, String[] emailArr) {
+		
+		//메일구성정보 담당(받는사람, 보내는 사람, 받는사람 메일주소, 본문내용)
+		MimeMessage mimeMessage = mailSender.createMimeMessage();
+		
+		try {
+			
+			// 메일템플릿으로 타임리프 사용목적으로 아래코드가 구성됨.
+			MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+            
+//			InternetAddress[] inetAddresses = InternetAddress.parse(dto.getReceiverMail());
+			
+			mimeMessageHelper.setTo(emailArr); // 메일 수신자
+            
+            
+            
+            mimeMessageHelper.setFrom(new InternetAddress(dto.getSenderMail(), dto.getSenderName()));
+            mimeMessageHelper.setSubject(dto.getSubject()); // 메일 제목
+            mimeMessageHelper.setText(dto.getMessage(), true); // 메일 본문 내용, HTML 여부
+			
+			// 메일발송기능
+			mailSender.send(mimeMessage);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+    }
+    
     public String createCode() {
         Random random = new Random();
         StringBuffer key = new StringBuffer();
