@@ -49,6 +49,16 @@ public class AdminOrderController {
 		model.addAttribute("pageMaker", new PageDTO(cri, totalCount));
 	}
 	
+	@GetMapping("/order_list2")
+	public String order_list2(Model model) throws Exception{
+		
+		List<Map<String, Object>> order_list = adminOrderService.order_list2();
+		
+		model.addAttribute("order_list", order_list);
+		
+		return "/admin/order/order_list_map";
+	}
+	
 	@GetMapping("/order_detail_info")
 	public ResponseEntity<Map<String, Object>> order_detail_info(Long ord_code, Model model) throws Exception{
 		

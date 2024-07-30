@@ -77,6 +77,24 @@
 			ord_code > 0
 	</select>
 	
+	<select id="order_list2" resultType="hashmap">
+	
+		SELECT
+			o.ord_code, o.mbl_id, o.ord_name, o.ord_addr_zipcode, o.ord_addr_basic, o.ord_addr_detail, o.ord_tel, o.ord_price, 
+			ot.pro_num, ot.dt_amount, ot.dt_price,
+			p.pro_name, p.pro_up_folder, p.pro_img
+		FROM
+			order_tbl o
+		INNER JOIN
+			ordetail_tbl ot
+		ON
+			o.ord_code = ot.ord_code
+		INNER JOIN
+			product_tbl p
+		ON
+			ot.pro_num = p.pro_num
+	</select>
+	
 	<select id="order_info" parameterType="Long" resultType="com.dogmall.demo.Order.OrderVO">
 	
 		SELECT 

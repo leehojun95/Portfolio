@@ -1,6 +1,7 @@
 package com.dogmall.demo.admin.order;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,10 @@ public class AdminOrderService {
 	
 	public List<OrderVO> order_list(Criteria cri, String start_date, String end_date) {
 		return adminOrderMapper.order_list(cri, start_date, end_date);
+	}
+	
+	public List<Map<String, Object>> order_list2(){
+		return adminOrderMapper.order_list2();
 	}
 	
 	public int getTotalCount(Criteria cri, String start_date, String end_date) {

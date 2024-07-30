@@ -1,6 +1,7 @@
 package com.dogmall.demo.admin.order;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -10,6 +11,8 @@ import com.dogmall.demo.Order.OrderVO;
 public interface AdminOrderMapper {
 
 	List<OrderVO> order_list(@Param("cri") Criteria cri, @Param("start_date") String start_date, @Param("end_date") String end_date);
+	
+	List<Map<String, Object>> order_list2();
 	
 	int getTotalCount(@Param("cri") Criteria cri, @Param("start_date") String start_date, @Param("end_date") String end_date);
 	
