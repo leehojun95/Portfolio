@@ -268,12 +268,12 @@ public class MemberController {
 		return "redirect:/user/changpw";
 	}
 	
-	@GetMapping("delete")
+	@GetMapping("/delete")
 	public void delete() {
 		
 	}
 	
-	@PostMapping("delete")
+	@PostMapping("/delete")
 	public String deleteOK(String mbl_password, HttpSession session, RedirectAttributes rttr) throws Exception{
 		
 		String mbl_id = ((MemberVO) session.getAttribute("login_status")).getMbl_id();
