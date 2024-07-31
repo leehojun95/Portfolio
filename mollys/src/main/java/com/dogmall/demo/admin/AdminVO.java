@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 public class AdminVO {
 
-	//admin_id, admin_pw, admin_visit_date
+	
 	private String admin_id;
 	private String admin_pw;
 	private Date   admin_visit_date;

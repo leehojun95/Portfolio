@@ -39,7 +39,7 @@ public class QnaController {
 		Map<String, Object> map = new HashMap<>();
 		
 		Criteria cri = new Criteria();
-		cri.setAmount(5);
+		cri.setAmount(6);
 		cri.setPageNum(page);
 		
 		List<QnaVO> qnalist = qnaService.qna_list(pro_num, cri);
