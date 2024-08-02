@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<!--
+This is a starter template page. Use this page to start your new project from
+scratch. This page gets rid of all links and provides the needed markup only.
+-->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{admin/layout/adminlayout}">
+  <head>
+    
+    
+  </head>
+  <!--
+  BODY TAG OPTIONS:
+  =================
+  Apply one or more of the following classes to get the
+  desired effect
+  |---------------------------------------------------------|
+  | SKINS         | skin-blue                               |
+  |               | skin-black                              |
+  |               | skin-purple                             |
+  |               | skin-yellow                             |
+  |               | skin-red                                |
+  |               | skin-green                              |
+  |---------------------------------------------------------|
+  |LAYOUT OPTIONS | fixed                                   |
+  |               | layout-boxed                            |
+  |               | layout-top-nav                          |
+  |               | sidebar-collapse                        |
+  |               | sidebar-mini                            |
+  |---------------------------------------------------------|
+  -->
+  <body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+
+      <!-- Main Header -->
+      
+      <!-- Left side column. contains the logo and sidebar -->
+      
+	<th:block layout:fragment="content">
+       <script src="/ckeditor/ckeditor.js"></script>
+      <!-- Content Wrapper. Contains page content -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <!-- Main content -->
+        <section class="content">
+
+          <!-- Your Page Content Here -->
+					<div class="row">
+						<div class="col">
+							<div class="box box-info">
+								<div class="box-header with-border">
+									<h3 class="box-title">게시판 작성</h3>
+								</div><!-- /.box-header -->
+								<!-- list start -->
+								<div class="row">
+									<div class="col-md-12">
+										<div class="box">
+											<div class="box-header with-border">
+												<h3 class="box-title">Board Send</h3>
+											</div>
+                <!-- form start -->
+                <form name="boardform" id="boardform" action="/admin/board/boardlistprocess"  method="post" class="form-horizontal">
+                  <div class="box-body">
+
+                    <div class="form-group row">
+                      <label for="b_tilte" class="col-sm-1 col-form-label">게시물 제목</label>
+                            <div class="col-sm-7">
+                              <input type="text" class="form-control" name="b_tilte" id="b_tilte" th:value="${boardVO.b_tilte}">
+                            </div>		         
+                    </div>
+                    
+					<div class="form-group row">
+					  <label for="uploadFile" class="col-sm-1 col-form-label">게시물 이미지 </label>
+		              <div class="col-sm-3">
+		              	<input type="hidden" name="b_num" th:value="${b_num}">
+		                <input type="file" class="form-control" name="uploadFile" id="uploadFile">
+		              </div>		
+					  <label for="img_preview" class="col-sm-1 col-form-label">미리보기 이미지</label>
+		              <div class="col-sm-3">
+		                <img id="img_preview" style="width:200px;height:200px;">
+		              </div>
+		            </div>
+
+                <div class="form-group row">
+                  <label for="b_content" class="col-sm-1 col-form-label">게시물 내용</label>
+                        <div class="col-sm-11">
+                          <textarea class="form-control" name="b_content" id="b_content" rows="3" style="width: 860px;" th:text="${boardVO.b_content}"></textarea>
+                        </div>
+                      </div>
+			            
+                  </div><!-- /.box-body -->
+                  <div class="box-footer text-center">
+                    <button type="button" id="btn_board_save" class="btn btn-primary">저장</button>
+                    <button type="button" id="btn_board_list" class="btn btn-secondary">목록</button>
+                  </div><!-- /.box-footer -->
+                </form>
+              </div>
+          	</div>
+          </div>
+        </div>
+      </div>
+    </div>
+        </section><!-- /.content -->
+      </div><!-- /.content-wrapper -->
+    </th:block>
+
+      <!-- Main Footer -->
+      
+
+      <!-- Control Sidebar -->
+      
+    
+
+    <!-- REQUIRED JS SCRIPTS -->
+	<th:block layout:fragment="script">
+	<script th:inline="javascript">
+	
+		let msg = [[${msg}]];  // null 
+		if(msg == 'save') {
+			alert("게시물이 저장됨");
+		}
+	
+	</script>
+    <script>
+
+      $(document).ready(function() {
+        
+       
+     // ckeditor 환경설정. 자바스크립트 Ojbect문법
+     var ckeditor_config = {
+             resize_enabled : false,
+             enterMode : CKEDITOR.ENTER_BR,
+             shiftEnterMode : CKEDITOR.ENTER_P,
+             toolbarCanCollapse : true,
+             removePlugins : "elementspath", 
+             //업로드 탭기능추가 속성. CKEditor에서 파일업로드해서 서버로 전송클릭하면 , 이 주소가 동작된다.
+             filebrowserUploadUrl: '/admin/board/imageupload' 
+     }
+
+     CKEDITOR.replace("b_content", ckeditor_config);
+
+     console.log("ckediotr 버전: ", CKEDITOR.version);  // ckediotr 버전:  4.12.1 (Standard)
+     
+     
+     // id="boardform"
+     let boardform = $("#boardform");
+
+     // 게시물저장  id="btn_board_save"
+     $("#btn_board_save").on("click", function() {
+      boardform.attr("action", "/admin/board/board_save");
+      boardform.submit();
+     });
+
+     // 메일목록 id="btn_mail_list"
+     $("#btn_board_list").on("click", function() {
+    	 location.href = "/admin/board/board_list";
+     });   
+        
+      }); // ready event end
+
+    </script>
+    </th:block>
+  </body>
+</html>

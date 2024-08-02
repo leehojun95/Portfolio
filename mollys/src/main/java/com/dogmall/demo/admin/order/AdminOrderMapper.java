@@ -25,4 +25,6 @@ public interface AdminOrderMapper {
 	void order_basic_modify(OrderVO vo);
 	
 	void order_tot_price_change(Long ord_code);
+	
+	void order_delete(Long ord_code);
 }

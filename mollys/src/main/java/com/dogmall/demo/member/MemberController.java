@@ -250,7 +250,6 @@ public class MemberController {
 		MemberVO vo = memberService.login(mbl_id);
 		
 		String msg = "";
-		String url = "/";
 		
 		if(vo != null) {
 			if(passwordEncoder.matches(cur_mbl_password, vo.getMbl_password())) {

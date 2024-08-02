@@ -56,4 +56,8 @@ public class AdminOrderService {
 	public void order_basic_modify(OrderVO vo) {
 		adminOrderMapper.order_basic_modify(vo);
 	}
+	
+	public void order_delete(Long ord_code) {
+		adminOrderMapper.order_delete(ord_code);
+	}
 }

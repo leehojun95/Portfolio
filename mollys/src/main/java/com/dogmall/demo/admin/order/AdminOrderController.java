@@ -91,6 +91,14 @@ public class AdminOrderController {
 		return FileManagerUtils.getFile(uploadPath + dateFolderName, fileName);
 	}
 	
+	@GetMapping("/order_delete")
+	public String order_delete (Criteria cri, Long ord_code) throws Exception{
+		
+		adminOrderService.order_delete(ord_code);
+		
+		return "redirect:/admin/order/order_list" + cri.getListLink();
+	}
+	
 	@GetMapping("/order_product_delete")
 	public ResponseEntity<String> order_product_delete(Long ord_code, int pro_num)throws Exception{
 		

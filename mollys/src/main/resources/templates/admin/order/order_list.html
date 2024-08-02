@@ -108,9 +108,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                               <th style="width: 25%">주문자(아이디)</th>
                               <th style="width: 10%">주문가격</th>
                               <th style="width: 20%">등록일</th>
-                              <th style="width: 10%">수정</th>
+                              <th style="width: 15%">주문상세보기 및 수정</th>
                               <th style="width: 10%">삭제</th>
-                              <th style="width: 10%">주문상세보기</th>
                             </tr>
 
                             <tr th:each="order : ${order_list}">
@@ -119,12 +118,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                               <td><span th:text="${#numbers.formatInteger(order.ord_price, 3, 'COMMA') + ' 원'}"></span>
                               </td>
                               <td th:text="${#dates.format(order.ord_regdate, 'yyyy-MM-dd HH:mm:ss') }"></td>
-                              <td><button type="button" class="btn btn-primary" name="btn_order_edit"
-                                  th:data-ord_code="${order.ord_code}">수정</button></td>
+                              <td><button type="button" class="btn btn-primary" name="btn_order_info"
+                                  th:data-ord_code="${order.ord_code}">상세보기 및 수정</button></td>
                               <td><button type="button" class="btn btn-danger" name="btn_order_del"
                                   th:data-ord_code="${order.ord_code}">삭제</button></td>
-                              <td><button type="button" class="btn btn-dark" name="btn_order_info"
-                                  th:data-ord_code="${order.ord_code}">상세보기</button></td>
                             </tr>
 
                           </tbody>
@@ -414,7 +411,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             actionForm.find("input[name='pageNum']").val($(this).attr("href"));
             actionForm.submit();
           });
-      
+
           // 상세보기 버튼 클릭 이벤트
           let ord_code; // 주문 코드 변수
 
@@ -459,7 +456,27 @@ scratch. This page gets rid of all links and provides the needed markup only.
               }
             });
           }
-      
+          
+
+          // 주문목록 삭제
+          $("button[name='btn_order_del']").on("click", function () {
+            
+            if (!confirm("주문목록에서 삭제하시겠습니까?")) return;
+        
+            let ord_code = $(this).data("ord_code");
+        
+            actionForm.find("input[name='ord_code']").remove();
+        
+            let str = `<input type="hidden" name="ord_code" id="ord_code" value="${ord_code}" />`;
+            console.log(str);
+        
+            actionForm.append(`<input type="hidden" name="ord_code" id="ord_code" value="${ord_code}" />`);
+            actionForm.attr("method", "get");
+            actionForm.attr("action", "/admin/order/order_delete");
+        
+            actionForm.submit();
+          });
+
 	// 주문상품 개별삭제
 	$("div#popup_info div#order_product_info").on("click", "button[name='order_product_detail']", function() {
 		

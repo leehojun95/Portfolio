@@ -6,34 +6,29 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container px-4 px-lg-5">
             <a class="navbar-brand" th:href="@{/}">Molly's</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <div th:if="${session.login_status == null and session.kakao_status == null and session.naver_status == null}">
+                <div
+                    th:if="${session.login_status == null and session.kakao_status == null and session.naver_status == null}">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                         <li class="nav-item"><a class="nav-link active" th:href="@{/user/login}">로그인</a></li>
                         <li class="nav-item"><a class="nav-link active" th:href="@{/user/join}">회원가입</a></li>
                     </ul>
                 </div>
-                <div th:if="${session.login_status != nul}">
+                <div th:if="${session.login_status != null}">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                    	<li class="nav-item"><a class="nav-link active" th:text="${session.login_status.mbl_name}"></a></li>
+                        <li class="nav-item"><a class="nav-link active" th:text="${session.login_status.mbl_name}"></a>
+                        </li>
                         <li class="nav-item"><a class="nav-link active" th:href="@{/user/logout}">로그아웃</a></li>
                         <li class="nav-item"><a class="nav-link active" th:href="@{/user/mypage}">마이페이지</a></li>
                         <li class="nav-item"><a class="nav-link active" th:href="@{/cart/cart_list}">장바구니</a></li>
                         <li class="nav-item"><a class="nav-link active" th:href="@{#}">주문자정보</a></li>
                     </ul>
                 </div>
-                
-                  <div th:if="${session.kakao_status != null}">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item"><a class="nav-link active" th:href="@{/user/logout}">로그아웃</a></li>
-                        <li class="nav-item"><a class="nav-link active" th:href="@{/user/mypage}">마이페이지</a></li>
-                        <li class="nav-item"><a class="nav-link active" th:href="@{/cart/cart_list}">장바구니</a></li>
-                        <li class="nav-item"><a class="nav-link active" th:href="@{#}">주문자정보</a></li>
-                    </ul>
-                </div>
-                
-                                  <div th:if="${session.naver_status != null}">
+
+                <div th:if="${session.kakao_status != null}">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                         <li class="nav-item"><a class="nav-link active" th:href="@{/user/logout}">로그아웃</a></li>
                         <li class="nav-item"><a class="nav-link active" th:href="@{/user/mypage}">마이페이지</a></li>
@@ -41,7 +36,41 @@
                         <li class="nav-item"><a class="nav-link active" th:href="@{#}">주문자정보</a></li>
                     </ul>
                 </div>
-               
+
+                <div th:if="${session.naver_status != null}">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link active" th:href="@{/user/logout}">로그아웃</a></li>
+                        <li class="nav-item"><a class="nav-link active" th:href="@{/user/mypage}">마이페이지</a></li>
+                        <li class="nav-item"><a class="nav-link active" th:href="@{/cart/cart_list}">장바구니</a></li>
+                        <li class="nav-item"><a class="nav-link active" th:href="@{#}">주문자정보</a></li>
+                    </ul>
+                </div>
+
+                <div
+                    th:if="${session.login_status == null and session.kakao_status == null and session.naver_status == null}">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link active" th:href="@{#}">공지사항</a></li>
+                    </ul>
+                </div>
+
+                <div th:if="${session.login_status != null}">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link active" th:href="@{#}">공지사항</a></li>
+                    </ul>
+                </div>
+
+                <div th:if="${session.kakao_status != null}">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link active" th:href="@{#}">공지사항</a></li>
+                    </ul>
+                </div>
+
+                <div th:if="${session.naver_status != null}">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link active" th:href="@{#}">공지사항</a></li>
+                    </ul>
+                </div>
+
 
             </div>
         </div>
@@ -55,5 +84,6 @@
             </div>
         </div>
     </header>
-</body>
+    </body>
+
 </html>

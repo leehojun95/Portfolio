@@ -105,6 +105,15 @@
 			ord_code = #{ord_code}
 	</select>
 	
+	<select id="order_delete" parameterType="long">
+	
+		DELETE FROM
+			order_tbl
+		WHERE
+			ord_code = #{ord_code}
+	
+	</select>
+	
 	<select id="order_detail_info" parameterType="Long" resultType="com.dogmall.demo.admin.order.OrderDetailInfoVo">
 	
 		SELECT 
@@ -120,7 +129,7 @@
 	
 	</select>
 	
-		<delete id="order_product_delete" parameterType="map">
+	<delete id="order_product_delete" parameterType="map">
 	
 		DELETE FROM 
 			ordetail_tbl
