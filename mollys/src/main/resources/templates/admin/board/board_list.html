@@ -33,13 +33,13 @@
 											</div>
 
 											<div class="box-body">
-												<form name="maillingsearchform" id="maillingsearch" action="/admin/mbmail/mailling_list"  method="get" class="form-horizontal">
+												<form name="boardsearchform" id="boardsearch" action="/admin/board/board_list"  method="get" class="form-horizontal">
 													<div class="box-body">
 													  <div class="form-group row">
-														<label for="m_title" class="col-sm-1 col-form-label">메일링제목</label>
+														<label for="b_title" class="col-sm-1 col-form-label">메일링제목</label>
 														<div class="col-sm-3">
-															<input type="text" class="form-control" name="m_title" id="m_title" placeholder="메일링제목...">
-															<button type="submit" id="btn_mail_search" class="btn btn-primary">검색</button>
+															<input type="text" class="form-control" name="b_title" id="b_title" placeholder="메일링제목...">
+															<button type="submit" id="btn_board_search" class="btn btn-primary">검색</button>
 														</div>		         
 													  </div>   
 													</div><!-- /.box-body -->
@@ -50,24 +50,22 @@
 													<table class="table table-bordered">
 															  <tbody><tr>
 																  <th style="width: 8%">번호</th>
-																  <th style="width: 25%">메일링제목</th>
-																  <th style="width: 10%">발송횟수</th>
+																  <th style="width: 25%">게시물 제목</th>
 																  <th style="width: 20%">등록일</th>
 																  <th style="width: 15%">관리</th>
-																  <th style="width: 15%">발송</th>
+																  <th style="width: 15%">등록</th>
 																  
 															  </tr>
 															  
-															  <tr th:each="mail : ${maillist}">
-																  <td><span th:text="${mail.m_num}"></span></td>
-																  <td>[[${mail.m_title}]]</td>
-																  <td th:text="${mail.m_send_count}"></td>
-																  <td th:text="${#dates.format(mail.m_regdate, 'yyyy-MM-dd HH:mm:ss') }"></td>
+															  <tr th:each="board : ${boardlist}">
+																  <td><span th:text="${board.b_num}"></span></td>
+																  <td>[[${board.b_title}]]</td>
+																  <td th:text="${#dates.format(board.b_regdate, 'yyyy-MM-dd HH:mm:ss') }"></td>
 																  <td>
-																	  <button type="button" class="btn btn-primary" name="btn_mail_edit" th:data-m_num="${mail.m_num}">수정</button>
-																	  <button type="button" class="btn btn-danger" name="btn_mail_del" th:data-m_num="${mail.m_num}">삭제</button>
+																	  <button type="button" class="btn btn-primary" name="btn_board_edit" th:data-b_num="${board.b_num}">수정</button>
+																	  <button type="button" class="btn btn-danger" name="btn_board_del" th:data-b_num="${board.b_num}">삭제</button>
 																  </td>
-																  <td><button type="button" class="btn btn-success" name="btn_mail_send" th:data-m_num="${mail.m_num}">메일보내기</button></td>
+																  <td><button type="button" class="btn btn-success" name="btn_board_send" th:data-b_num="${board.b_num}">게시물 등록</button></td>
 															  </tr>
 															  </tbody></table>
 												</div>
@@ -148,7 +146,7 @@
 	
 			let msg = [[${msg}]];  // null 
 			if(msg == 'save') {
-				alert("메일정보가 저장됨");
+				alert("게시물이 저장됨");
 			}
 		
 		</script>
@@ -163,46 +161,40 @@
 					$(".movepage").on("click", function (e) {
 						e.preventDefault(); // a태그의 href기능을 제거.
 						// 주소변경
-						actionForm.attr("action", "/admin/mbmail/mailling_list");
+						actionForm.attr("action", "/admin/board/board_list");
 				
 						// 1)클릭한 페이지번호 작업
 						actionForm.find("input[name='pageNum']").val($(this).attr("href"));
 						actionForm.submit();
 					});
 
-					// 메일보내기 name="btn_mail_send"  actionForm 을 이용한 시작했던 목록의 페이지이동작업
-					$("button[name='btn_mail_send']").on("click", function() {
-						let m_num = $(this).data("m_num");
+					// 메일보내기 name="btn_board_send"  actionForm 을 이용한 시작했던 목록의 페이지이동작업
+					$("button[name='btn_board_send']").on("click", function() {
+						let b_num = $(this).data("b_num");
 		
-						location.href = "/admin/mbmail/mailling_sendform?m_num=" + m_num;
+						location.href = "/admin/board/board_sendform?b_num=" + b_num;
 					});
 		
-					// 메일수정 name="btn_mail_edit"   actionForm 을 이용한 시작했던 목록의 페이지이동작업
-					$("button[name='btn_mail_edit']").on("click", function() {
-						let m_num = $(this).data("m_num");
+					// 메일수정 name="btn_board_edit"   actionForm 을 이용한 시작했던 목록의 페이지이동작업
+					$("button[name='btn_board_edit']").on("click", function() {
+						let b_num = $(this).data("b_num");
 		
-						location.href = "/admin/mbmail/mailling_sendform?m_num=" + m_num;
-					});
-		
-					// 메일등록 id="btn_mail_register"
-					$("#btn_mail_register").on("click", function() {
-						
-						location.href = "/admin/mbmail/mailling_form";
+						location.href = "/admin/board/board_sendform?b_num=" + b_num;
 					});
 
-					$("button[name ='btn_mail_del']").on("click", function(){
+					$("button[name ='btn_board_del']").on("click", function(){
 						if(!confirm("메일을 삭제하시겠습니까?")) return;
 
-						let m_num = $(this).data("m_num");
+						let b_num = $(this).data("b_num");
 
-						actionForm.find("input[name='m_num']").remove();
+						actionForm.find("input[name='b_num']").remove();
 
-						let str = `<input type="hidden" name="m_num" id="m_num" value="${m_num}" />`;
+						let str = `<input type="hidden" name="b_num" id="b_num" value="${b_num}" />`;
 						console.log(str);
 
-						actionForm.append(`<input type="hidden" name="m_num" id="m_num" value="${m_num}" />`);
+						actionForm.append(`<input type="hidden" name="b_num" id="b_num" value="${b_num}" />`);
 						actionForm.attr("method", "get");
-						actionForm.attr("action", "/admin/mbmail/mailling_delete");
+						actionForm.attr("action", "/admin/board/board_delete");
 
 						actionForm.submit();
 					});

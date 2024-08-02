@@ -39,8 +39,8 @@
 														<label for="m_title" class="col-sm-1 col-form-label">메일링제목</label>
 														<div class="col-sm-3">
 															<input type="text" class="form-control" name="m_title" id="m_title" placeholder="메일링제목...">
-															<button type="submit" id="btn_mail_search" class="btn btn-primary">검색</button>
 														</div>		         
+														<button type="submit" id="btn_mail_search" class="btn btn-primary">검색</button>
 													  </div>   
 													</div><!-- /.box-body -->
 												  </form>
@@ -62,7 +62,7 @@
 																  <td><span th:text="${mail.m_num}"></span></td>
 																  <td>[[${mail.m_title}]]</td>
 																  <td th:text="${mail.m_send_count}"></td>
-																  <td th:text="${#dates.format(mail.m_regdate, 'yyyy-MM-dd HH:mm:ss') }"></td>
+																  <td th:text="${#dates.format(mail.m_regdate, 'yyyy-MM-dd HH:mm:ss') }"></td> 
 																  <td>
 																	  <button type="button" class="btn btn-primary" name="btn_mail_edit" th:data-m_num="${mail.m_num}">수정</button>
 																	  <button type="button" class="btn btn-danger" name="btn_mail_del" th:data-m_num="${mail.m_num}">삭제</button>
