@@ -83,7 +83,7 @@
 	
 	</update>
 	
-		<select id="getMailSendInfo" resultType="com.dogmall.demo.admin.MBmail.MBmailVO" parameterType="int">
+	<select id="getMailSendInfo" resultType="com.dogmall.demo.admin.MBmail.MBmailVO" parameterType="int">
 	
 		SELECT
 			m_num, m_title, m_content, m_check, m_send_count, m_regdate, mbl_email

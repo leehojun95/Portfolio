@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dogmall.demo.admin.board.BoardMapper">
+   
+	<insert id="board_insert" parameterType="com.dogmall.demo.admin.board.BoardVO">
+	
+	    INSERT INTO 
+    	board_tbl (b_num, b_title, b_content, b_img, b_up_folder)
+    VALUES 
+    	(seq_b_num.NEXTVAL, #{b_title}, #{b_content}, #{b_img}, #{b_up_folder})
+	</insert>
+   
+   	<sql id="criteria">
+		<trim prefix="(" suffix=") AND" prefixOverrides="OR">
+			<foreach collection="typeArr" item="type">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'N'.toString()">
+							pro_name like '%' || #{keyword} || '%'
+						</when>
+						<when test="type == 'P'.toString()">
+							pro_publisher like '%' || #{keyword} || '%'
+						</when>
+						<when test="type == 'C'.toString()">
+							pro_content like '%' || #{keyword} || '%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+	
+	<select id="board_list" resultType="com.dogmall.demo.admin.board.BoardVO" parameterType="com.dogmall.demo.DTO.Criteria">
+	
+		SELECT
+			b_num, b_title, b_content, b_img, b_regdate, b_up_folder, b_updatedate
+		FROM(
+		    	SELECT /*+ INDEX_DESC(board_tbl PK_b_num)  */ 
+			        	ROWNUM AS RN, b_num, b_title, b_content, b_img, b_regdate, b_up_folder, b_updatedate
+		    	FROM
+		        	board_tbl
+		    	WHERE 
+		    	
+	    	<include refid="criteria"></include>
+	 
+		 <![CDATA[  		
+		   		ROWNUM <= (#{pageNum} * #{amount})   -- 페이지번호 * 페이지별 출력건수
+		 ]]>  		
+		)
+		WHERE 
+			RN > (#{pageNum} - 1 ) * #{amount}
+	</select>
+	
+	<select id="getTotalCount"  resultType="int">
+	
+		SELECT
+			COUNT(*)
+		FROM
+			board_tbl
+		WHERE
+			<include refid="criteria"></include>
+			b_num > 0
+	</select>
+	
+	<select id="board_edit" resultType="com.dogmall.demo.admin.board.BoardVO" parameterType="integer">
+	
+		SELECT
+			b_num, b_title, b_content, b_img, b_regdate, b_up_folder, b_updatedate
+		FROM
+			board_tbl
+		WHERE
+			b_num = #{b_num}
+	
+	</select>
+	
+	<update id="board_edit_ok" parameterType="com.dogmall.demo.admin.board.BoardVO">
+	
+		UPDATE
+			board_tbl
+		SET
+			b_title = #{b_title}, 
+			b_content = #{b_content}, 
+			b_img = #{b_img}, 
+			b_up_folder = #{b_up_folder},
+			b_updatedate = sysdate
+		WHERE
+			b_num = #{b_num}
+	
+	</update>
+	
+		<select id="board_delete" parameterType="Integer">
+	
+		DELETE FROM
+			board_tbl
+		WHERE
+			b_num = #{b_num}
+	
+	</select>
+   
+</mapper>

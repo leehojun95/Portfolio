@@ -8,10 +8,15 @@ import com.dogmall.demo.DTO.Criteria;
 
 public interface BoardMapper {
 	
-	List<BoardVO> getBoardInfoList(@Param("cri") Criteria cri, @Param("b_title") String b_title);
-	
-	int getMailListCount(String b_title);
-	
 	void board_insert(BoardVO vo);
+	
+	List<BoardVO> board_list(Criteria cri);
 
+	int getTotalCount(Criteria cri);
+	
+	BoardVO board_edit(Integer b_num);
+	
+	void board_edit_ok(BoardVO vo);
+	
+	void board_delete(Integer b_num);
 }

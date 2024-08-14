@@ -30,7 +30,6 @@ public class ProductController {
 	@Value("${file.product.image.dir}")
 	private String uploadPath;
 	
-	
 	@Value("${file.ckdir}")
 	private String uploadCKPath;
 

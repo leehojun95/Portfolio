@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.dogmall.demo.DTO.Criteria;
 import com.dogmall.demo.DTO.PageDTO;
@@ -40,30 +41,18 @@ public class BoardController {
 	
 	@Value("${file.ckdir}")
 	private String uploadCKPath;
-	
-	@GetMapping("/board_list")
-	public void board_list(Criteria cri, String b_title, Model model) throws Exception{
-		
-		List<BoardVO> boardlist = boardService.getBoardInfoList(cri, b_title);
-		
-		int totalcount = boardService.getMailListCount(b_title);
-		PageDTO pageDto = new PageDTO(cri, totalcount);
-		
-		model.addAttribute("boardlist", boardlist);
-		model.addAttribute("pageMaker", pageDto);
-	}
-	
+
 	@GetMapping("/board_insert")
-	public void board_insert(@ModelAttribute BoardVO vo) {
+	public void board_insert(BoardVO vo) throws Exception{
 		
 	}
 	
 	@PostMapping("/board_insert")
-	public String board_insert(@ModelAttribute BoardVO vo, MultipartFile uploadFile) throws Exception {
+	public String board_insertOk(BoardVO vo, MultipartFile uploadFile) throws Exception{
 		
 		String dateFolder = FileManagerUtils.getDateFolder();
 		String saveFileName = FileManagerUtils.uploadFile(uploadPath, dateFolder, uploadFile);
-
+		
 		vo.setB_img(saveFileName);
 		vo.setB_up_folder(dateFolder);
 		
@@ -124,4 +113,73 @@ public class BoardController {
 		
 		return entity;
 	}
+	
+	@GetMapping("/board_list")
+	public void board_list(Criteria cri, Model model) throws Exception{
+		
+		List<BoardVO> board_list = boardService.board_list(cri);
+		
+		board_list.forEach(vo -> {
+			vo.setB_up_folder(vo.getB_up_folder().replace("\\", "/"));
+		});
+		
+		int totalcount = boardService.getTotalCount(cri);
+		
+		model.addAttribute("board_list", board_list);
+		model.addAttribute("pageMaker", new PageDTO(cri, totalcount));
+	}
+	
+	@GetMapping("/image_display")
+	public ResponseEntity<byte[]> image_display(String dateFolderName, String fileName) throws Exception {
+		
+		return FileManagerUtils.getFile(uploadPath + dateFolderName, fileName);
+	}
+	
+	@GetMapping("/board_edit")
+	public void board_edit(@ModelAttribute("cri") Criteria cri, Integer b_num, Model model) {
+		
+		BoardVO vo = boardService.board_edit(b_num);
+		
+		vo.setB_up_folder(vo.getB_up_folder().replace("\\", "/"));
+		model.addAttribute("boardVO", vo);
+	}
+	
+	@PostMapping("/board_edit")
+	public String board_edit(BoardVO vo, MultipartFile uploadFile, Criteria cri, RedirectAttributes rttr) throws Exception{
+		
+		if(!uploadFile.isEmpty()) {
+			
+			FileManagerUtils.delete(uploadPath, vo.getB_up_folder(), vo.getB_img(), "image");
+			
+			String dateFolder = FileManagerUtils.getDateFolder();
+			String saveFileName = FileManagerUtils.uploadFile(uploadPath, dateFolder, uploadFile);
+			
+			vo.setB_img(saveFileName);
+			vo.setB_up_folder(dateFolder);
+		}
+		
+		boardService.board_edit_ok(vo);
+		
+		return "redirect:/admin/board/board_list" + cri.getListLink();
+	}
+	
+	@GetMapping("/board_delete")
+	public String board_delete(Criteria cri, Integer b_num) {
+		
+		boardService.board_delete(b_num);
+		
+		return "redirect:/admin/board/board_list" + cri.getListLink();
+		
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+

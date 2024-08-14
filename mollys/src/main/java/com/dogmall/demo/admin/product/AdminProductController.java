@@ -57,8 +57,6 @@ public class AdminProductController {
 	@PostMapping("pro_insert")
 	public String pro_insertOk(AdminProductVO vo, MultipartFile uploadFile) throws Exception {
 		
-		
-		
 		String dateFolder = FileManagerUtils.getDateFolder();
 		String saveFileName = FileManagerUtils.uploadFile(uploadPath, dateFolder, uploadFile);
 		

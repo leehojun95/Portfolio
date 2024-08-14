@@ -77,7 +77,7 @@
 			ord_code > 0
 	</select>
 	
-	<select id="order_list2" resultType="hashmap">
+	<select id="order_list2" resultType="hashmap"> 
 	
 		SELECT
 			o.ord_code, o.mbl_id, o.ord_name, o.ord_addr_zipcode, o.ord_addr_basic, o.ord_addr_detail, o.ord_tel, o.ord_price, 

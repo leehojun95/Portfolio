@@ -116,7 +116,7 @@
 	
 	</update>
 	
-		<update id="pro_checked_modify2" parameterType="list">
+	<update id="pro_checked_modify2" parameterType="list">
 	
 		<foreach collection="list" item="item" open="declare begin" separator=";" close="; end;">
 			

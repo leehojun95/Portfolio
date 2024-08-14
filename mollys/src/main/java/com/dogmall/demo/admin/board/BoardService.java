@@ -21,11 +21,23 @@ public class BoardService {
 		boardMapper.board_insert(vo);
 	}
 	
-	public List<BoardVO> getBoardInfoList(Criteria cri, String b_title) {
-		return boardMapper.getBoardInfoList(cri, b_title);
+	public List<BoardVO> board_list(Criteria cri){
+		return boardMapper.board_list(cri);
 	}
 	
-	public int getMailListCount(String b_title) {
-		return boardMapper.getMailListCount(b_title);
+	public int getTotalCount(Criteria cri) {
+		return boardMapper.getTotalCount(cri);
+	}
+	
+	public BoardVO board_edit(Integer b_num) {
+		return boardMapper.board_edit(b_num);
+	}
+	
+	public void board_edit_ok(BoardVO vo) {
+		boardMapper.board_edit_ok(vo);
+	}
+	
+	public void board_delete(Integer b_num) {
+		boardMapper.board_delete(b_num);
 	}
 }

@@ -71,7 +71,7 @@ public class MBmailController {
 		return "/admin/mbmail/mailling_form";
 	}
 	
-	@PostMapping("mailling_send")
+	@PostMapping("/mailling_send")
 	public String mailling_send(MBmailVO vo, RedirectAttributes rttr) throws Exception {
 	    // 입력된 이메일 주소를 가져옵니다
 	    String recipientEmails = vo.getMbl_email();
@@ -101,25 +101,6 @@ public class MBmailController {
 	    // 메일 목록 페이지로 리다이렉트합니다
 	    return "redirect:/admin/mbmail/mailling_list";
 	}
-
-	
-	/*
-	 	@PostMapping("mailling_send")
-	public String mailling_send(MBmailVO vo, RedirectAttributes rttr) throws Exception{
-		
-		String[] emailArr = mbmailService.getAllMailAddress();
-		
-		EmailDTO dto = new EmailDTO("Molly's", "Molly's", "", vo.getM_title(), vo.getM_content());
-		
-		emailService.sendMail(dto, emailArr);
-		
-		mbmailService.mailSendCountUpdate(vo.getM_num());
-		
-		rttr.addFlashAttribute("msg", "send");
-		
-		return "redirect:/admin/mbmail/mailling_list";
-	} 
-	 */
 
 	
 	@GetMapping("/mailling_sendform")
