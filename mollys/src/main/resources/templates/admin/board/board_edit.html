@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/layout/adminlayout}">
+
+<body class="hold-transition skin-blue sidebar-mini">
+	<div class="wrapper">
+
+		<!-- Main Header -->
+
+		<!-- Left side column. contains the logo and sidebar -->
+
+		<th:block layout:fragment="content">
+			<script src="/ckeditor/ckeditor.js"></script>
+			<!-- Content Wrapper. Contains page content -->
+			<div class="content-wrapper">
+				<!-- Content Header (Page header) -->
+
+				<!-- Main content -->
+				<section class="content">
+
+					<!-- Your Page Content Here -->
+					<div class="row">
+						<div class="col">
+							<div class="box box-info">
+								<div class="box-header with-border">
+									<h3 class="box-title">게시판 수정</h3>
+								</div><!-- /.box-header -->
+								<div class="box-header with-border">
+									<h3 class="box-title">Bulletin Edit</h3>
+								</div>
+								<!-- form start -->
+								<form action="/admin/board/board_edit" method="post" enctype="multipart/form-data"
+									class="form-horizontal">
+									<div class="box-body">
+										<div class="form-group row">
+											<label for="title" class="col-sm-1 col-form-label">게시판 제목</label>
+											<div class="col-sm-10">
+												<input type="hidden" name="b_num" id="b_num"
+												th:value="${boardVO.b_num}">
+												<input type="text" class="form-control" name="b_title" id="b_title"
+												th:value="${boardVO.b_title}">
+											</div>
+										</div>
+									</div>
+										<div class="form-group row">
+											<label for="title" class="col-sm-1 col-form-label">게시판 이미지</label>
+											<div class="col-sm-3">
+												<input type="hidden" name="b_up_folder" id="b_up_folder"
+												th:value="${boardVO.b_up_folder}">
+											<input type="hidden" name="b_img" id="b_img"
+												th:value="${boardVO.b_img}">
+
+												<input type="file" class="form-control" name="uploadFile"
+													id="uploadFile">
+											</div>
+											<label for="title" class="col-sm-1 col-form-label">미리보기 이미지</label>
+											<div class="col-sm-3">
+												<img id="img_preview" style="width:200px;height:200px;"
+												th:src="${'/admin/board/image_display?dateFolderName=' + boardVO.b_up_folder + '&fileName=' + boardVO.b_img}">
+											</div>
+										</div>
+										<div class="form-group row">
+											<label for="title" class="col-sm-1 col-form-label">상품설명</label>
+											<div class="col-sm-10">
+												<textarea class="form-control" name="b_content" id="b_content"
+													rows="3" style="width: 860px;" th:text="${boardVO.b_content}"></textarea>
+											</div>
+										</div>
+									</div><!-- /.box-body -->
+									<div class="box-footer">
+										<button type="submit" class="btn btn-primary float-right">게시판 수정</button>
+									</div><!-- /.box-footer -->
+								</form>
+							</div>
+						</div>
+					</div>
+
+
+				</section><!-- /.content -->
+			</div><!-- /.content-wrapper -->
+		</th:block>
+
+		<!-- Main Footer -->
+
+
+		<!-- Control Sidebar -->
+
+
+
+		<!-- REQUIRED JS SCRIPTS -->
+		<th:block layout:fragment="script">
+			<script>
+
+				$(document).ready(function () {
+
+					// 파일첨부시 이미지 미리보기
+					$("#uploadFile").on("change", function (e) {
+						let file = e.target.files[0];
+
+						let reader = new FileReader();
+						reader.readAsDataURL(file);
+
+						reader.onload = function (e) {
+							$("#img_preview").attr("src", e.target.result);
+						}
+					});
+
+					// ckeditor 환경설정. 자바스크립트 Ojbect문법
+					var ckeditor_config = {
+						resize_enabled: false,
+						enterMode: CKEDITOR.ENTER_BR,
+						shiftEnterMode: CKEDITOR.ENTER_P,
+						toolbarCanCollapse: true,
+						removePlugins: "elementspath",
+						//업로드 탭기능추가 속성. CKEditor에서 파일업로드해서 서버로 전송클릭하면 , 이 주소가 동작된다.
+						filebrowserUploadUrl: '/admin/board/imageupload'
+					}
+
+					CKEDITOR.replace("b_content", ckeditor_config);
+
+					console.log("ckediotr 버전: ", CKEDITOR.version);  // ckediotr 버전:  4.12.1 (Standard)
+
+
+				})
+
+			</script>
+		</th:block>
+</body>
+
+</html>
