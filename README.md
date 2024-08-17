@@ -1,10 +1,15 @@
-
-# SpringBoot - Portfolio - SBDog
-반려동물 쇼핑몰
+# SpringBoot - Portfolio - Molly's(반려동물 쇼핑몰 홈페이지)
+- User ID : user01
+- User PW : 1234
+- Admin Test ID : admin
+- Admin Test PW : 1234
+- 배포 URL : (예쩡)
 
 
 # 프로젝트 소개
-SNS로그인, 관리자페이지 구현, 카테고리 등의 기능을 구현한 반려동물 쇼핑몰 페이지 입니다.
+- 반려동물을 위한 쇼핑몰입니다.
+- 카테고리를 통해 원하는 반려동물의 상품을 찾을 수 있습니다.
+- 관리기능을 통해 상품등록, 리뷰 및 QnA관리, 통계분석이 가능합니다.
 
 
 # 개발기간 및 참여인원(맴버구성)
