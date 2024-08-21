@@ -1,4 +1,4 @@
-# SpringBoot - Portfolio - Molly's(반려동물 쇼핑몰 홈페이지)
+# Portfolio - Molly's(반려동물 쇼핑몰 홈페이지)
 - User ID : user01
 - User PW : 1234
 - Admin Test ID : admin
