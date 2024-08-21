@@ -31,9 +31,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/admin/board/*")
-public class BoardController {
+public class AdminBoardController {
 
-	private final BoardService boardService;
+	private final AdminBoardService adminboardService;
 	
 	@Value("${file.product.image.dir}")
 	private String uploadPath;
@@ -43,12 +43,12 @@ public class BoardController {
 	private String uploadCKPath;
 
 	@GetMapping("/board_insert")
-	public void board_insert(BoardVO vo) throws Exception{
+	public void board_insert(AdmimBoardVO vo) throws Exception{
 		
 	}
 	
 	@PostMapping("/board_insert")
-	public String board_insertOk(BoardVO vo, MultipartFile uploadFile) throws Exception{
+	public String board_insertOk(AdmimBoardVO vo, MultipartFile uploadFile) throws Exception{
 		
 		String dateFolder = FileManagerUtils.getDateFolder();
 		String saveFileName = FileManagerUtils.uploadFile(uploadPath, dateFolder, uploadFile);
@@ -56,7 +56,7 @@ public class BoardController {
 		vo.setB_img(saveFileName);
 		vo.setB_up_folder(dateFolder);
 		
-		boardService.board_insert(vo);
+		adminboardService.board_insert(vo);
 		
 		return "redirect:/admin/board/board_list";
 	}
@@ -117,13 +117,13 @@ public class BoardController {
 	@GetMapping("/board_list")
 	public void board_list(Criteria cri, Model model) throws Exception{
 		
-		List<BoardVO> board_list = boardService.board_list(cri);
+		List<AdmimBoardVO> board_list = adminboardService.board_list(cri);
 		
 		board_list.forEach(vo -> {
 			vo.setB_up_folder(vo.getB_up_folder().replace("\\", "/"));
 		});
 		
-		int totalcount = boardService.getTotalCount(cri);
+		int totalcount = adminboardService.getTotalCount(cri);
 		
 		model.addAttribute("board_list", board_list);
 		model.addAttribute("pageMaker", new PageDTO(cri, totalcount));
@@ -138,14 +138,14 @@ public class BoardController {
 	@GetMapping("/board_edit")
 	public void board_edit(@ModelAttribute("cri") Criteria cri, Integer b_num, Model model) {
 		
-		BoardVO vo = boardService.board_edit(b_num);
+		AdmimBoardVO vo = adminboardService.board_edit(b_num);
 		
 		vo.setB_up_folder(vo.getB_up_folder().replace("\\", "/"));
 		model.addAttribute("boardVO", vo);
 	}
 	
 	@PostMapping("/board_edit")
-	public String board_edit(BoardVO vo, MultipartFile uploadFile, Criteria cri, RedirectAttributes rttr) throws Exception{
+	public String board_edit(AdmimBoardVO vo, MultipartFile uploadFile, Criteria cri, RedirectAttributes rttr) throws Exception{
 		
 		if(!uploadFile.isEmpty()) {
 			
@@ -158,7 +158,7 @@ public class BoardController {
 			vo.setB_up_folder(dateFolder);
 		}
 		
-		boardService.board_edit_ok(vo);
+		adminboardService.board_edit_ok(vo);
 		
 		return "redirect:/admin/board/board_list" + cri.getListLink();
 	}
@@ -166,7 +166,7 @@ public class BoardController {
 	@GetMapping("/board_delete")
 	public String board_delete(Criteria cri, Integer b_num) {
 		
-		boardService.board_delete(b_num);
+		adminboardService.board_delete(b_num);
 		
 		return "redirect:/admin/board/board_list" + cri.getListLink();
 		

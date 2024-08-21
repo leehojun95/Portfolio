@@ -24,7 +24,6 @@
                         <li class="nav-item"><a class="nav-link active" th:href="@{/user/logout}">로그아웃</a></li>
                         <li class="nav-item"><a class="nav-link active" th:href="@{/user/mypage}">마이페이지</a></li>
                         <li class="nav-item"><a class="nav-link active" th:href="@{/cart/cart_list}">장바구니</a></li>
-                        <li class="nav-item"><a class="nav-link active" th:href="@{#}">주문자정보</a></li>
                     </ul>
                 </div>
 
@@ -33,7 +32,6 @@
                         <li class="nav-item"><a class="nav-link active" th:href="@{/user/logout}">로그아웃</a></li>
                         <li class="nav-item"><a class="nav-link active" th:href="@{/user/mypage}">마이페이지</a></li>
                         <li class="nav-item"><a class="nav-link active" th:href="@{/cart/cart_list}">장바구니</a></li>
-                        <li class="nav-item"><a class="nav-link active" th:href="@{#}">주문자정보</a></li>
                     </ul>
                 </div>
 
@@ -42,32 +40,31 @@
                         <li class="nav-item"><a class="nav-link active" th:href="@{/user/logout}">로그아웃</a></li>
                         <li class="nav-item"><a class="nav-link active" th:href="@{/user/mypage}">마이페이지</a></li>
                         <li class="nav-item"><a class="nav-link active" th:href="@{/cart/cart_list}">장바구니</a></li>
-                        <li class="nav-item"><a class="nav-link active" th:href="@{#}">주문자정보</a></li>
                     </ul>
                 </div>
 
                 <div
                     th:if="${session.login_status == null and session.kakao_status == null and session.naver_status == null}">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item"><a class="nav-link active" th:href="@{#}">공지사항</a></li>
+                        <li class="nav-item"><a class="nav-link active" th:href="@{/board/board_list}">공지사항</a></li>
                     </ul>
                 </div>
 
                 <div th:if="${session.login_status != null}">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item"><a class="nav-link active" th:href="@{#}">공지사항</a></li>
+                        <li class="nav-item"><a class="nav-link active" th:href="@{/board/board_list}">공지사항</a></li>
                     </ul>
                 </div>
 
                 <div th:if="${session.kakao_status != null}">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item"><a class="nav-link active" th:href="@{#}">공지사항</a></li>
+                        <li class="nav-item"><a class="nav-link active" th:href="@{/board/board_list}">공지사항</a></li>
                     </ul>
                 </div>
 
                 <div th:if="${session.naver_status != null}">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item"><a class="nav-link active" th:href="@{#}">공지사항</a></li>
+                        <li class="nav-item"><a class="nav-link active" th:href="@{/board/board_list}">공지사항</a></li>
                     </ul>
                 </div>
 

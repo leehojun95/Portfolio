@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class BoardVO {
+public class AdmimBoardVO {
 
 	//b_num, b_title, b_content, b_img, b_regdate, b_updatedate
 	

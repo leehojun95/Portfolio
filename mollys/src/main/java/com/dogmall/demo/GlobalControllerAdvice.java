@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Slf4j
-@ControllerAdvice(basePackages = {"com.dogmall.demo.product"})
+@ControllerAdvice(basePackages = {"com.dogmall.demo.product", "com.dogmall.demo.board"})
 public class GlobalControllerAdvice {
 
 	private final AdminCategoryService adminCategoryService;

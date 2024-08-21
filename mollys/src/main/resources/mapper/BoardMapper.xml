@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dogmall.demo.board.BoardMapper">
+
+	<select id="board_list" resultType="com.dogmall.demo.admin.board.AdmimBoardVO" parameterType="com.dogmall.demo.DTO.Criteria">
+	
+		SELECT
+			b_num, b_title, b_content, b_img, b_regdate, b_up_folder, b_updatedate
+		FROM(
+		    	SELECT /*+ INDEX_DESC(board_tbl PK_b_num)  */ 
+			        	ROWNUM AS RN, b_num, b_title, b_content, b_img, b_regdate, b_up_folder, b_updatedate
+		    	FROM
+		        	board_tbl
+		    	WHERE 
+		    	
+	    	<include refid="criteria"></include>
+	 
+		 <![CDATA[  		
+		   		ROWNUM <= (#{pageNum} * #{amount})   -- 페이지번호 * 페이지별 출력건수
+		 ]]>  		
+		)
+		WHERE 
+			RN > (#{pageNum} - 1 ) * #{amount}
+	</select>
+	
+	   	<sql id="criteria">
+		<trim prefix="(" suffix=") AND" prefixOverrides="OR">
+			<foreach collection="typeArr" item="type">
+				<trim prefix="OR">
+					<choose>
+						<when test="type == 'N'.toString()">
+							b_name like '%' || #{keyword} || '%'
+						</when>
+						<when test="type == 'T'.toString()">
+							b_title like '%' || #{keyword} || '%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+	</sql>
+	
+	<select id="getTotalCount"  resultType="int">
+	
+		SELECT
+			COUNT(*)
+		FROM
+			board_tbl
+		WHERE
+			<include refid="criteria"></include>
+			b_num > 0
+	</select>
+	
+	<select id="board_info" parameterType="int" resultType="com.dogmall.demo.admin.board.AdmimBoardVO">
+	
+		SELECT
+			b_num, b_title, b_content, b_img, b_regdate, b_up_folder, b_updatedate
+		FROM
+			board_tbl
+		WHERE
+			b_num = #{b_num}
+	
+	</select>
+
+</mapper>

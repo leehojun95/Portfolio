@@ -1,18 +1,9 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{admin/layout/adminlayout}">
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layoutbasic}">
+<body>
 
-<body class="hold-transition skin-blue sidebar-mini">
-	<div class="wrapper">
-
-		<!-- Main Header -->
-
-		<!-- Left side column. contains the logo and sidebar -->
-
-		<th:block layout:fragment="content">
-			<script src="/ckeditor/ckeditor.js"></script>
-			<!-- Content Wrapper. Contains page content -->
-			<div class="content-wrapper">
+<th:block layout:fragment="content">
+        		<div class="content-wrapper">
 
 				<!-- Main content -->
 				<section class="content">
@@ -22,16 +13,12 @@
 						<div class="col">
 							<div class="box box-info">
 								<div class="box-header with-border">
-									<h3 class="box-title">게시판목록</h3>
+									<h3 class="box-title">공지사항</h3>
 								</div><!-- /.box-header -->
 								<!-- list start -->
 								<div class="row">
 									<div class="col-md-12">
 										<div class="box">
-											<div class="box-header with-border">
-												<h3 class="box-title">Product List</h3>
-											</div>
-
 											<div class="box-body">
 												<div>
 													<form action="/admin/board/board_list" method="get">
@@ -53,26 +40,19 @@
 												<table class="table table-bordered">
 													<tbody>
 														<tr>
-															<th style="width: 8%">게시물번호</th>
-															<th style="width: 25%">게시물제목</th>
-															<th style="width: 20%">등록일</th>
-															<th style="width: 10%">수정</th>
-															<th style="width: 10%">삭제</th>
+															<th style="width: 10%">번호</th>
+															<th style="width: 60%">게시물제목</th>
+															<th style="width: 30%">등록일</th>
 														</tr>
 
 														<tr th:each="board : ${board_list}">
-															<td>[[${board.b_num}]]</td>
-															<td th:text="${board.b_title }"></td>
+															<td th:text="${board.b_num}"></td>
+															<td>
+																<a th:href="@{/board/board_detail(b_num = ${board.b_num})}"
+																th:text="${board.b_title}"></a>
+															</td>
 															<td
 																th:text="${#dates.format(board.b_regdate, 'yyyy-MM-dd HH:mm:ss') }">
-															</td>
-															<td><button type="button" class="btn btn-primary"
-																	name="btn_b_edit"
-																	th:data-b_num="${board.b_num}">수정</button>
-															</td>
-															<td><button type="button" class="btn btn-danger"
-																	name="btn_b_del"
-																	th:data-b_num="${board.b_num}">삭제</button>
 															</td>
 														</tr>
 
@@ -139,9 +119,6 @@
 															</ul>
 														</nav>
 													</div>
-													<div class="col-md-2 text-right"><a
-															th:href="@{/admin/board/board_insert}"
-															class="btn btn-primary" id="btn_board_insert">게시물 등록</a></div>
 												</div>
 
 											</div>
@@ -155,77 +132,27 @@
 
 				</section><!-- /.content -->
 			</div><!-- /.content-wrapper -->
-		</th:block>
+        
+</th:block>
 
-		<!-- Main Footer -->
+<th:block layout:fragment="script">
+    <script>
+    
+		$(document).ready(function (){
+			let actionForm = $("#actionForm");
+        
+            // 페이지번호 클릭시(이전  1  2  3  4  5  다음) actionForm 을 사용한다.
+            $(".movepage").on("click", function (e) {
+                e.preventDefault(); // a태그의 href기능을 제거.
+                // 주소변경
+                actionForm.attr("action", "/board/board_list");
+        
+                // 1)클릭한 페이지번호 작업
+                actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+                actionForm.submit();
+            });
+		});
 
-
-		<!-- Control Sidebar -->
-
-
-
-		<!-- REQUIRED JS SCRIPTS -->
-		<th:block layout:fragment="script">
-
-			<script>
-
-				$(document).ready(function () {
-
-					let actionForm = $("#actionForm");
-
-
-					// 페이지번호 클릭시(이전  1  2	 3	4	5  다음) actionForm 을 사용한다.
-					$(".movepage").on("click", function (e) {
-						e.preventDefault(); // a태그의 href기능을 제거.
-						
-						// 주소변경
-						actionForm.attr("action", "/admin/board/board_list");
-
-						//클릭한 페이지번호 작업
-						actionForm.find("input[name='pageNum']").val($(this).attr("href"));
-
-						actionForm.submit();
-					});
-
-					$("button[name='btn_b_edit']").on("click", function(){
-						let b_num = $(this).data("b_num");
-
-						// 뒤로버튼 클릭시 사용되어 문제를 일으킴 방지목적.
-						actionForm.find("input[name='b_num']").remove();
-
-						// 자바스크립트 문법 : string template. 백틱에 문자열과 변수를 함께사용 가능한 문법
-						let str = `<input type="hidden" name="b_num" id="b_num" value="${b_num}" />`;
-						console.log(str);
-
-						actionForm.append(`<input type="hidden" name="b_num" id="b_num" value="${b_num}" />`);
-						actionForm.attr("method", "get");
-						actionForm.attr("action", "/admin/board/board_edit");
-
-						actionForm.submit();
-					});
-
-					$("button[name='btn_b_del']").on("click", function () {
-
-						if (!confirm("상품을 삭제하겠습니까?")) return;
-
-						let b_num = $(this).data("b_num");
-
-						actionForm.find("input[name='b_num']").remove();
-
-						let str = `<input type="hidden" name="b_num" id="b_num" value="${b_num}" />`;
-						console.log(str);
-
-						actionForm.append(`<input type="hidden" name="b_num" id="b_num" value="${b_num}" />`);
-						actionForm.attr("method", "get");
-						actionForm.attr("action", "/admin/board/board_delete");
-
-						actionForm.submit();
-					});
-
-				});
-
-			</script>
-		</th:block>
+    </script>
+    </th:block>
 </body>
-
-</html>

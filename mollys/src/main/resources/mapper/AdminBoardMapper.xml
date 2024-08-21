@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dogmall.demo.admin.board.BoardMapper">
+<mapper namespace="com.dogmall.demo.admin.board.AdminBoardMapper">
    
-	<insert id="board_insert" parameterType="com.dogmall.demo.admin.board.BoardVO">
+	<insert id="board_insert" parameterType="com.dogmall.demo.admin.board.AdmimBoardVO">
 	
 	    INSERT INTO 
     	board_tbl (b_num, b_title, b_content, b_img, b_up_folder)
@@ -16,13 +16,10 @@
 				<trim prefix="OR">
 					<choose>
 						<when test="type == 'N'.toString()">
-							pro_name like '%' || #{keyword} || '%'
+							b_name like '%' || #{keyword} || '%'
 						</when>
-						<when test="type == 'P'.toString()">
-							pro_publisher like '%' || #{keyword} || '%'
-						</when>
-						<when test="type == 'C'.toString()">
-							pro_content like '%' || #{keyword} || '%'
+						<when test="type == 'T'.toString()">
+							b_title like '%' || #{keyword} || '%'
 						</when>
 					</choose>
 				</trim>
@@ -30,7 +27,7 @@
 		</trim>
 	</sql>
 	
-	<select id="board_list" resultType="com.dogmall.demo.admin.board.BoardVO" parameterType="com.dogmall.demo.DTO.Criteria">
+	<select id="board_list" resultType="com.dogmall.demo.admin.board.AdmimBoardVO" parameterType="com.dogmall.demo.DTO.Criteria">
 	
 		SELECT
 			b_num, b_title, b_content, b_img, b_regdate, b_up_folder, b_updatedate
@@ -62,7 +59,7 @@
 			b_num > 0
 	</select>
 	
-	<select id="board_edit" resultType="com.dogmall.demo.admin.board.BoardVO" parameterType="integer">
+	<select id="board_edit" resultType="com.dogmall.demo.admin.board.AdmimBoardVO" parameterType="integer">
 	
 		SELECT
 			b_num, b_title, b_content, b_img, b_regdate, b_up_folder, b_updatedate
@@ -73,7 +70,7 @@
 	
 	</select>
 	
-	<update id="board_edit_ok" parameterType="com.dogmall.demo.admin.board.BoardVO">
+	<update id="board_edit_ok" parameterType="com.dogmall.demo.admin.board.AdmimBoardVO">
 	
 		UPDATE
 			board_tbl
