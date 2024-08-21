@@ -13,7 +13,7 @@ env:
   AWS_CODE_DEPLOY_APPLICATION: mollys
   AWS_CODE_DEPLOY_GROUP: mollys-group
 
-jobs:
+jobs: 
   build:
 
     runs-on: ubuntu-latest
