@@ -3,8 +3,6 @@
 - User PW : 1234
 - Admin Test ID : admin
 - Admin Test PW : 1234
-- 배포 URL : (예정)
-
 
 # 프로젝트 소개
 - 반려동물을 위한 쇼핑몰입니다.
@@ -24,7 +22,6 @@
 - Database : Oracle
 - Server : Tomcat 9.0
 - 버전 및 이슈관리 : Github
-- 서비스 배포 환경 : AWS(예정)
 
 
 # 채택기능 설명
