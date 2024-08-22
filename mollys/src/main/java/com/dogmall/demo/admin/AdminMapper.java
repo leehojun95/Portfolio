@@ -4,6 +4,4 @@ public interface AdminMapper {
 
 	AdminVO loginOk(String admin_id);
 	
-	
-	
 }
