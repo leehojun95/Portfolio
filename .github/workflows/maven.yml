@@ -9,7 +9,7 @@ on:
 env:
   PROJECT_NAME: mollys
   AWS_REGION: ap-northeast-2
-  AWS_S3_BUCKET:mollys-deploy-bucket
+  AWS_S3_BUCKET: mollys-deploy-bucket
   AWS_CODE_DEPLOY_APPLICATION: mollys
   AWS_CODE_DEPLOY_GROUP: mollys-group
 
